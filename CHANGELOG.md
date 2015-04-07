@@ -2,6 +2,7 @@ CHANGELOG for Sulu
 ==================
 
 * dev-develop
+    * FEATURE     #977  [MediaBundle]     Made Format Cache parameters configurable, prefix ghostscript path parameter with sulu_media.
     * BUGFIX      #945  [WebsiteBundle]  Fix Redirect url with query string correctly and trailing slash
     * ENHANCEMENT #1029 [All]            Removed prefixes from content navigation providers and admins
 

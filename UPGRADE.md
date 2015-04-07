@@ -2,6 +2,19 @@
 
 ## dev-develop
 
+### Media Format Cache Public Folder
+
+If you use the `sulu_media.format_cache.public_folder` parameter, 
+the following configuration update need to be done,
+because the parameter does not longer exists:
+
+``` yml
+sulu_media:
+    format_cache:
+        public_folder: 'public' # delete this line
+        path: %kernel.root_dir%/../public/uploads/media # add this new configuration
+```
+
 ### Admin
 
 The `Sulu` prefix from all `ContentNavigationProviders` and `Admin` classes has
