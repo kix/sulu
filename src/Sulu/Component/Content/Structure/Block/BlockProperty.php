@@ -98,7 +98,7 @@ class BlockProperty extends Property
      */
     public function getChildProperties($typeName)
     {
-        return $this->getType($typeName)->getChildProperties();
+        return $this->getBlockType($typeName)->getChildProperties();
     }
 
     /**
@@ -109,7 +109,7 @@ class BlockProperty extends Property
      */
     public function initProperties($index, $typeName)
     {
-        $type = $this->getType($typeName);
+        $type = $this->getBlockType($typeName);
         $this->properties[$index] = clone($type);
 
         return $this->properties[$index];

@@ -211,7 +211,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             $this->assertEquals($expected->getResourceSegment(), $item['url']);
 
             if ($expected->getContent()->offsetExists('article')) {
-                $this->assertEquals($expected->getContent()->getProperty('article'), $item['my_article']);
+                $this->assertEquals($expected->getContent()->getProperty('article')->getValue(), $item['my_article']);
             }
         }
     }

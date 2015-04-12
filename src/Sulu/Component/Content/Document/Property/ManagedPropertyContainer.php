@@ -67,6 +67,7 @@ class ManagedPropertyContainer extends PropertyContainer
         $phpcrName = $this->propertyEncoder->fromProperty($structureProperty, $locale);
 
         $property = new Property($phpcrName, $this->document);
+        $property->setStructureProperty($structureProperty);
         $this->properties[$name] = $property;
 
         $contentType = $this->contentTypeManager->get($contentTypeName);

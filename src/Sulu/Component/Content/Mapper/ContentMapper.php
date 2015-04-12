@@ -72,6 +72,7 @@ use Sulu\Component\Content\Document\Behavior\WorkflowStageBehavior;
 use Sulu\Component\Content\Document\Behavior\ShadowLocaleBehavior;
 use Sulu\Bundle\ContentBundle\Document\PageDocument;
 use Sulu\Component\Content\Document\Behavior\ResourceSegmentBehavior;
+use Sulu\Component\Content\Structure\Property;
 
 /**
  * Maps content nodes to phpcr nodes with content types and provides utility function to handle content nodes
@@ -1062,14 +1063,15 @@ class ContentMapper implements ContentMapperInterface
         }
 
         // generate field data
-        // $fieldsData = $this->getFieldsData(
-        //     $row,
-        //     $node,
-        //     $fields[$originLocale],
-        //     $document->getStructureType(),
-        //     $webspaceKey,
-        //     $locale
-        // );
+        $fieldsData = $this->getFieldsData(
+            $row,
+            $node,
+            $document,
+            $fields[$originLocale],
+            $document->getStructureType(),
+            $webspaceKey,
+            $locale
+        );
 
         $structureType = $document->getStructureType();
         $shortPath = str_replace($this->sessionManager->getContentPath($structureType), '', $document->getPath());
@@ -1093,14 +1095,14 @@ class ContentMapper implements ContentMapperInterface
                 'parent' => $document->getParent()->getUuid(),
                 'order' => null, // TODO: Implement order
             ),
-            array()
+            $fieldsData
         );
     }
 
     /**
      * Return extracted data (configured by fields array) from node
      */
-    private function getFieldsData(Row $row, $document, $fields, $templateKey, $webspaceKey, $locale)
+    private function getFieldsData(Row $row, NodeInterface $node, $document, $fields, $templateKey, $webspaceKey, $locale)
     {
         $fieldsData = array();
         foreach ($fields as $field) {
@@ -1118,7 +1120,7 @@ class ContentMapper implements ContentMapperInterface
             if (!isset($target[$field['name']])) {
                 $target[$field['name']] = '';
             }
-            if (($data = $this->getFieldData($field, $row, $document, $templateKey, $webspaceKey, $locale)) !== null) {
+            if (($data = $this->getFieldData($field, $row, $node, $document, $templateKey, $webspaceKey, $locale)) !== null) {
                 $target[$field['name']] = $data;
             }
         }
@@ -1129,7 +1131,7 @@ class ContentMapper implements ContentMapperInterface
     /**
      * Return data for one field
      */
-    private function getFieldData($field, Row $row, $document, $templateKey, $webspaceKey, $locale)
+    private function getFieldData($field, Row $row, NodeInterface $node, $document, $templateKey, $webspaceKey, $locale)
     {
         if (isset($field['column'])) {
             // normal data from node property
@@ -1148,10 +1150,48 @@ class ContentMapper implements ContentMapperInterface
             && (!isset($field['templateKey']) || $field['templateKey'] === $templateKey)
         ) {
             // not extension data but property of node
-            return $this->getPropertyData($node, $field['property'], $webspaceKey, $locale);
+            return $this->getPropertyData($document, $field['property']);
         }
 
         return null;
+    }
+
+    /**
+     * Returns data for property
+     */
+    private function getPropertyData($document, Property $property)
+    {
+        return $document->getContent()->getProperty($property->getName())->getValue();
+    }
+
+    /**
+     * Returns data for extension and property name
+     */
+    private function getExtensionData(
+        NodeInterface $node,
+        StructureExtension $extension,
+        $propertyName,
+        $webspaceKey,
+        $locale
+    ) {
+        // extension data: load ones
+        if (!$this->extensionDataCache->contains($extension->getName())) {
+            $this->extensionDataCache->save(
+                $extension->getName(),
+                $this->loadExtensionData(
+                    $node,
+                    $extension,
+                    $webspaceKey,
+                    $locale
+                )
+            );
+        }
+
+        // get extension data from cache
+        $data = $this->extensionDataCache->fetch($extension->getName());
+
+        // if property exists set it to target (with default value '')
+        return isset($data[$propertyName]) ? $data[$propertyName] : null;
     }
 
     /**
@@ -1172,30 +1212,12 @@ class ContentMapper implements ContentMapperInterface
 
             if ($property->getContentTypeName() !== 'resource_locator') {
                 return 'http://' . $document->getContent()->getProperty($property->getName())->getValue();
-            } else {
-                return $document->getResourceSegment();
             }
+        
+            return $document->getResourceSegment();
         }
 
         return '';
-    }
-
-    /**
-     * Loads urls for given page for all locales in webspace
-     * @param Page $page
-     * @param NodeInterface $node
-     * @param string $webspaceKey
-     * @param string $segmentKey
-     */
-    private function loadLocalizedUrlsForPage(PageDocument $page, NodeInterface $node, $webspaceKey, $segmentKey)
-    {
-        $localizedUrls = array();
-
-        if ($document instanceof ResourceSegmentBehavior) {
-            $localizedUrls = $this->getLocalizedUrlsForPage($page, $node, $webspaceKey, $segmentKey);
-        }
-
-        $page->setUrls($localizedUrls);
     }
 
     /**

@@ -16,6 +16,7 @@ class Property implements PropertyInterface
     private $value;
     private $name;
     private $structureProperty;
+    private $child;
 
     public function __construct($name, $document)
     {
@@ -52,6 +53,11 @@ class Property implements PropertyInterface
         return $this->name;
     }
 
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -67,5 +73,14 @@ class Property implements PropertyInterface
     {
         return $this->structureProperty;
     }
-    
+
+    public function getChildProperties()
+    {
+        return $this->children;
+    }
+
+    public function addChild(Property $property)
+    {
+        $this->children[] = $property;
+    }
 }

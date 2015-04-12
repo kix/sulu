@@ -68,48 +68,39 @@ class BlockContentType extends ComplexContentType
         $segmentKey
     ) {
         $structureProperty = $property->getStructureProperty();
+        $blockPropertyName = $property->getName();
 
-        var_dump($structureProperty);die();;
         /** @var BlockPropertyInterface $blockProperty */
         $blockProperty = $structureProperty;
         while (!$blockProperty instanceof BlockProperty) {
             $blockProperty = $blockProperty->getProperty();
         }
 
-        // init properties
-        $typeProperty = new Property('type', '', 'text_line');
-        $lengthProperty = new Property('length', '', 'text_line');
-
-        // load length
-        $contentType = $this->contentTypeManager->get($lengthProperty->getContentTypeName());
-        $contentType->read(
-            $node,
-            new BlockPropertyWrapper($lengthProperty, $property),
-            $webspaceKey,
-            $languageCode,
-            $segmentKey
+        $length = $node->getPropertyValueWithDefault(
+            $this->encodeBlockPropertyName($blockPropertyName, 'length'), null
         );
-        $len = $lengthProperty->getValue();
 
-        for ($i = 0; $i < $len; $i++) {
+        for ($i = 0; $i < $length; $i++) {
             // load type
-            $contentType = $this->contentTypeManager->get($typeProperty->getContentTypeName());
-            $contentType->read(
-                $node,
-                new BlockPropertyWrapper($typeProperty, $property, $i),
-                $webspaceKey,
-                $languageCode,
-                $segmentKey
+            $type = $node->getPropertyValue(
+                $this->encodeBlockPropertyName($blockPropertyName, 'type', $i)
             );
 
-            $blockPropertyType = $blockProperty->initProperties($i, $typeProperty->getValue());
+            $blockPropertyType = $blockProperty->initProperties($i, $type);
 
             /** @var PropertyInterface $subProperty */
             foreach ($blockPropertyType->getChildProperties() as $subProperty) {
                 $contentType = $this->contentTypeManager->get($subProperty->getContentTypeName());
+
+                $childProperty = new ValueProperty(
+                    $this->encodeBlockPropertyName($blockPropertyName, $subProperty->getName(), $i),
+                    null
+                );
+                $property->addChild($childProperty);
+
                 $contentType->read(
                     $node,
-                    new BlockPropertyWrapper($subProperty, $property, $i),
+                    $childProperty,
                     $webspaceKey,
                     $languageCode,
                     $segmentKey
@@ -222,7 +213,7 @@ class BlockContentType extends ComplexContentType
                     $this->writeProperty(
                         $property,
                         $blockTypeProperty,
-                        $data,
+                        $blockTypeData,
                         $i,
                         $node,
                         $userId,
@@ -257,9 +248,9 @@ class BlockContentType extends ComplexContentType
                 $blockTypeProperty->getName(),
                 $index
             ),
-            $data
+            $blockProperty->getDocument()
         );
-
+        $property->setValue($data);
 
         // TODO find a better why for change Types (same hack is used in ContentMapper:save )
         $contentType->remove(
