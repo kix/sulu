@@ -47,7 +47,7 @@ class Property implements PropertyInterface, \JsonSerializable
 
     /**
      * @var Metadata
-     * @Type("Sulu\Component\Content\Metadata")
+     * @Type("Sulu\Component\Content\Structure\Metadata")
      */
     private $metadata;
 

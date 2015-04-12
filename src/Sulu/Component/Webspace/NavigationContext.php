@@ -10,7 +10,7 @@
 
 namespace Sulu\Component\Webspace;
 
-use Sulu\Component\Content\Metadata;
+use Sulu\Component\Content\Structure\Metadata;
 
 /**
  * Represents a navigation context defined in webspace xml

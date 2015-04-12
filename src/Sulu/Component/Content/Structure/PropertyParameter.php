@@ -44,7 +44,7 @@ class PropertyParameter
 
     /**
      * @var Metadata
-     * @Type("Sulu\Component\Content\Metadata")
+     * @Type("Sulu\Component\Content\Structure\Metadata")
      */
     private $metadata;
 
