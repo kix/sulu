@@ -59,6 +59,11 @@ class SmartContentQueryBuilderTest extends SuluTestCase
     private $languageNamespace;
 
     /**
+     * @var PropertyEncoder
+     */
+    private $encoder;
+
+    /**
      * @var Tag
      */
     private $tag1;
@@ -85,6 +90,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
         $this->webspaceManager = $this->getContainer()->get('sulu_core.webspace.webspace_manager');
         $this->sessionManager = $this->getContainer()->get('sulu.phpcr.session');
         $this->contentQuery = $this->getContainer()->get('sulu.content.query_executor');
+        $this->encoder = $this->getContainer()->get('sulu_document_manager.property_encoder');
 
         $this->languageNamespace = $this->getContainer()->getParameter('sulu.content.language.namespace');
 
@@ -170,6 +176,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
 
         $builder = new SmartContentQueryBuilder(
             $this->structureFactory,
+            $this->encoder,
             $this->webspaceManager,
             $this->sessionManager,
             $this->languageNamespace
@@ -191,20 +198,20 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             $expected = $nodes[$item['uuid']];
 
             $this->assertEquals($expected->getUuid(), $item['uuid']);
-            $this->assertEquals($expected->getNodeType(), $item['nodeType']);
+            $this->assertEquals($expected->getRedirectType(), $item['nodeType']);
             $this->assertEquals($expected->getPath(), $item['path']);
             $this->assertEquals($expected->getChanged(), $item['changed']);
             $this->assertEquals($expected->getChanger(), $item['changer']);
             $this->assertEquals($expected->getCreated(), $item['created']);
             $this->assertEquals($expected->getCreator(), $item['creator']);
-            $this->assertEquals($expected->getLanguageCode(), $item['locale']);
-            $this->assertEquals($expected->getKey(), $item['template']);
+            $this->assertEquals($expected->getLocale(), $item['locale']);
+            $this->assertEquals($expected->getStructureType(), $item['template']);
 
-            $this->assertEquals($expected->title, $item['title']);
-            $this->assertEquals($expected->url, $item['url']);
+            $this->assertEquals($expected->getTitle(), $item['title']);
+            $this->assertEquals($expected->getResourceSegment(), $item['url']);
 
-            if ($expected->hasProperty('article')) {
-                $this->assertEquals($expected->article, $item['my_article']);
+            if ($expected->getContent()->offsetExists('article')) {
+                $this->assertEquals($expected->getContent()->getProperty('article'), $item['my_article']);
             }
         }
     }
@@ -220,7 +227,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            WorkflowStage::PUBLISHED
+            Structure::STATE_PUBLISHED
         );
         $products = $this->mapper->save(
             array('title' => 'Products', 'url' => '/products'),
@@ -231,7 +238,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            WorkflowStage::PUBLISHED
+            Structure::STATE_PUBLISHED
         );
 
         $nodes = array();
@@ -251,7 +258,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
                 true,
                 null,
                 $news->getUuid(),
-                WorkflowStage::PUBLISHED
+                Structure::STATE_PUBLISHED
             );
             $nodes[$node->getUuid()] = $node;
         }
@@ -434,7 +441,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            WorkflowStage::PUBLISHED
+            Structure::STATE_PUBLISHED
         );
         $nodes[$node->url] = $node;
         $node = $this->mapper->save(
@@ -449,7 +456,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            WorkflowStage::PUBLISHED
+            Structure::STATE_PUBLISHED
         );
         $nodes[$node->url] = $node;
         $node = $this->mapper->save(
@@ -464,7 +471,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            WorkflowStage::PUBLISHED
+            Structure::STATE_PUBLISHED
         );
         $nodes[$node->url] = $node;
         $node = $this->mapper->save(
@@ -479,7 +486,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            WorkflowStage::PUBLISHED
+            Structure::STATE_PUBLISHED
         );
         $nodes[$node->url] = $node;
 
@@ -689,7 +696,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
                 $nodesEn['/team']->getUuid(),
                 false,
                 null,
-                WorkflowStage::TEST
+                Structure::STATE_TEST
             )
         );
         $nodesEn = array_merge(
@@ -716,7 +723,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
                 $nodesEn['/team']->getUuid(),
                 false,
                 null,
-                WorkflowStage::TEST
+                Structure::STATE_TEST
             )
         );
 
@@ -784,7 +791,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
         $parent = null,
         $isShadow = false,
         $shadowLocale = '',
-        $state = WorkflowStage::PUBLISHED
+        $state = Structure::STATE_PUBLISHED
     ) {
         $node = $this->mapper->save(
             $data,

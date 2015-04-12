@@ -3,8 +3,8 @@
 namespace Sulu\Bundle\MediaBundle\Tests\Fixtures;
 
 use Sulu\Component\Content\Structure\Property;
-use Sulu\Component\Content\Block\BlockProperty;
-use Sulu\Component\Content\Block\BlockPropertyType;
+use Sulu\Component\Content\Structure\Block\BlockProperty;
+use Sulu\Component\Content\Structure\Block\BlockPropertyType;
 use Sulu\Component\Content\Structure\PropertyTag;
 use Sulu\Component\Content\Section\SectionProperty;
 

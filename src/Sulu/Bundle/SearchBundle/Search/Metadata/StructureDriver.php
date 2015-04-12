@@ -17,7 +17,7 @@ use Sulu\Component\Content\StructureInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Sulu\Bundle\SearchBundle\Search\SuluSearchEvents;
 use Sulu\Bundle\SearchBundle\Search\Event\StructureMetadataLoadEvent;
-use Sulu\Component\Content\Block\BlockProperty;
+use Sulu\Component\Content\Structure\Block\BlockProperty;
 use Sulu\Component\Content\Document\Property\PropertyInterface;
 use Metadata\ClassMetadata;
 use Massive\Bundle\SearchBundle\Search\Metadata\ComplexMetadata;

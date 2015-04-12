@@ -12,10 +12,11 @@ namespace Sulu\Bundle\ContentBundle\Content\Type\SmartContent;
 
 use Sulu\Component\Content\Mapper\Translation\TranslatedProperty;
 use Sulu\Component\Content\Query\ContentQueryBuilder;
-use Sulu\Component\Content\Structure\Page;
 use Sulu\Component\Content\Structure\Factory\StructureFactoryInterface;
 use Sulu\Component\PHPCR\SessionManager\SessionManagerInterface;
 use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
+use Sulu\Component\Content\Compat\Stucture\LegacyStructureConstants;
+use Sulu\Bundle\DocumentManagerBundle\Bridge\PropertyEncoder;
 
 /**
  * Query builder to load smart content
@@ -64,11 +65,12 @@ class SmartContentQueryBuilder extends ContentQueryBuilder
 
     public function __construct(
         StructureFactoryInterface $structureFactory,
+        PropertyEncoder $encoder,
         WebspaceManagerInterface $webspaceManager,
         SessionManagerInterface $sessionManager,
         $languageNamespace
     ) {
-        parent::__construct($structureFactory, $languageNamespace);
+        parent::__construct($structureFactory, $encoder, $languageNamespace);
 
         $this->webspaceManager = $webspaceManager;
         $this->sessionManager = $sessionManager;
@@ -183,7 +185,7 @@ class SmartContentQueryBuilder extends ContentQueryBuilder
      */
     private function buildPropertySelect($alias, $propertyName, $locale, &$additionalFields)
     {
-        foreach ($this->structureFactory->getStructures(Page::TYPE_PAGE) as $structure) {
+        foreach ($this->structureFactory->getStructures(LegacyStructureConstants::TYPE_PAGE) as $structure) {
             if ($structure->hasProperty($propertyName)) {
                 $property = $structure->getProperty($propertyName);
                 $additionalFields[$locale][] = array(

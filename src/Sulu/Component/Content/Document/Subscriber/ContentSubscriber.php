@@ -155,18 +155,14 @@ class ContentSubscriber extends AbstractMappingSubscriber
         }
 
         // Document title is mandatory
+        // TODO: This is duplicated inthe TitleSubscriber
         $document->getContent()->getProperty('title')->setValue($document->getTitle());
 
         foreach ($structure->getChildren() as $propertyName => $structureProperty) {
             $contentTypeName = $structureProperty->getContentTypeName();
             $contentType = $this->contentTypeManager->get($contentTypeName);
 
-            // TODO: The following logic is duplicated in the ManagedPropertyContainer
-            if (true === $structureProperty->isLocalized()) {
-                $phpcrName = $this->encoder->localizedContentName($propertyName, $locale);
-            } else {
-                $phpcrName = $this->encoder->contentname($propertyName);
-            }
+            $phpcrName = $this->encoder->fromProperty($structureProperty, $locale);
 
             $realProperty = $propertyContainer->getProperty($propertyName);
             $property = new Property($phpcrName, $document);

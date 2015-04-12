@@ -224,13 +224,4 @@ class Item
     {
         return $this->description[$locale];
     }
-
-    /**
-     * TODO: Remove this, it identical to Item::getChildren()
-     * @deprecated
-     */
-    public function getChildProperties()
-    {
-        return $this->getChildren();
-    }
 }

@@ -18,6 +18,7 @@ use Sulu\Component\DocumentManager\Event\PersistEvent;
 use Sulu\Component\DocumentManager\PropertyEncoder;
 use Sulu\Component\DocumentManager\ProxyFactory;
 use Sulu\Component\DocumentManager\DocumentRegistry;
+use Sulu\Component\Content\Document\RedirectType;
 
 class RedirectTypeSubscriber extends AbstractMappingSubscriber
 {
@@ -91,7 +92,7 @@ class RedirectTypeSubscriber extends AbstractMappingSubscriber
 
         $node->setProperty(
             $this->encoder->localizedSystemName(self::REDIRECT_TYPE_FIELD, $event->getLocale()),
-            $document->getRedirectType()
+            $document->getRedirectType() ? : RedirectType::NONE
         );
 
         $node->setProperty(

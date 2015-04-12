@@ -62,12 +62,9 @@ class ManagedPropertyContainer extends PropertyContainer
 
         $contentTypeName = $structureProperty->getType();
 
-        if (true === $structureProperty->isLocalized()) {
-            $locale = $this->document->getLocale();
-            $phpcrName = $this->propertyEncoder->localizedContentName($name, $locale);
-        } else {
-            $phpcrName = $this->propertyEncoder->contentname($name);
-        }
+        // TODO: Use inspector to get locale
+        $locale = $this->document->getLocale();
+        $phpcrName = $this->propertyEncoder->fromProperty($structureProperty, $locale);
 
         $property = new Property($phpcrName, $this->document);
         $this->properties[$name] = $property;

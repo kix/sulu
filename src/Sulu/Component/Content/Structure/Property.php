@@ -100,7 +100,7 @@ class Property extends Item implements PropertyInterface
 
     public function getIsMultiple()
     {
-        return $this->minOccurs !== $this->maxOccurs;
+        return $this->isMultiple();
     }
 
     /**
@@ -183,6 +183,11 @@ class Property extends Item implements PropertyInterface
     public function isRequired()
     {
         return $this->required;
+    }
+
+    public function isMultiple()
+    {
+        return $this->minOccurs !== $this->maxOccurs;
     }
 
     public function isLocalized()

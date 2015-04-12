@@ -15,6 +15,7 @@ use Sulu\Component\DocumentManager\Event\HydrateEvent;
 use Symfony\Component\EventDispatcher\Event;
 use Sulu\Component\Content\Document\Behavior\WorkflowStageBehavior;
 use Sulu\Component\DocumentManager\Event\PersistEvent;
+use PHPCR\PropertyType;
 
 class WorkflowStageSubscriber extends AbstractMappingSubscriber
 {
@@ -44,7 +45,8 @@ class WorkflowStageSubscriber extends AbstractMappingSubscriber
     {
         $event->getNode()->setProperty(
             $this->encoder->localizedSystemName(self::FIELD, $event->getLocale()),
-            $event->getDocument()->getWorkflowStage()
+            $event->getDocument()->getWorkflowStage(),
+            PropertyType::LONG
         );
     }
 }

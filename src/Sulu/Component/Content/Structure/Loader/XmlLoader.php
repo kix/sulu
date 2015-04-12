@@ -19,6 +19,8 @@ use Sulu\Component\Content\Structure\Structure;
 use Sulu\Component\Content\Structure\Property;
 use Sulu\Component\Content\Structure\Item;
 use Sulu\Component\Content\Structure\Section;
+use Sulu\Component\Content\Structure\Block\BlockProperty;
+use Sulu\Component\Content\Structure\Block\BlockPropertyType;
 
 /**
  * Load structure structure from an XML file
@@ -55,32 +57,24 @@ class XmlLoader extends XmlLegacyLoader
     private function createProperty($propertyName, $propertyData)
     {
         if ($propertyData['type'] === 'block') {
-            // return $this->createBlock($propertyData);
+            return $this->createBlock($propertyName, $propertyData);
         }
 
         if ($propertyData['type'] === 'section') {
-            return $this->createSection($propertyData);
+            return $this->createSection($propertyName, $propertyData);
         }
-
-        $propertyData = $this->normalizePropertyData($propertyData);
 
         $property = new Property();
         $property->name = $propertyName;
-        $property->type = $propertyData['type'];
-        $property->localized = $propertyData['multilingual'];
-        $property->required = $propertyData['mandatory'];
-        $property->colSpan = $propertyData['colspan'];
-        $property->cssClass = $propertyData['cssClass'];
-        $property->tags = $propertyData['tags'];
-        $property->minOccurs = $propertyData['minOccurs'];
-        $property->maxOccurs = $propertyData['maxOccurs'];
+        $this->mapProperty($property, $propertyData);
 
         return $property;
     }
 
-    private function createSection($data)
+    private function createSection($propertyName, $data)
     {
         $section = new Section();
+        $section->name = $propertyName;
 
         foreach ($data['properties'] as $name => $property) {
             $section->children[$name] = $this->createProperty($property);
@@ -89,11 +83,37 @@ class XmlLoader extends XmlLegacyLoader
         return $section;
     }
 
-    private function createBlock($data)
+    private function createBlock($propertyName, $data)
     {
-        throw new \BadMethodCallException(sprintf(
-            'Not implemented'
-        ));
+        $blockProperty = new BlockProperty();
+        $blockProperty->name = $propertyName;
+        $this->mapProperty($blockProperty, $data);
+
+        foreach ($data['types'] as $name => $type) {
+            $blockType = new BlockPropertyType($name, $type['meta']);
+            foreach ($type['properties'] as $propertyName => $propertyData) {
+                $property = new Property();
+                $property->name = $propertyName;
+                $this->mapProperty($property, $propertyData);
+                $blockType->addChild($property);
+            }
+            $blockProperty->addType($blockType);
+        }
+
+        return $blockProperty;
+    }
+
+    private function mapProperty(Property $property, $data)
+    {
+        $data = $this->normalizePropertyData($data);
+        $property->type = $data['type'];
+        $property->localized = $data['multilingual'];
+        $property->required = $data['mandatory'];
+        $property->colSpan = $data['colspan'];
+        $property->cssClass = $data['cssClass'];
+        $property->tags = $data['tags'];
+        $property->minOccurs = $data['minOccurs'];
+        $property->maxOccurs = $data['maxOccurs'];
     }
 
     private function normalizePropertyData($data)

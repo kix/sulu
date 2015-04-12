@@ -285,4 +285,9 @@ class TranslatedProperty implements PropertyInterface
     {
         $this->property->setStructure($structure);
     }
+
+    public function getDocument()
+    {
+        return $this->property->getDocument();
+    }
 }

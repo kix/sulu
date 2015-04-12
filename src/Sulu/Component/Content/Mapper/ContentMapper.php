@@ -36,7 +36,7 @@ use Sulu\Component\Content\Mapper\Translation\MultipleTranslatedProperties;
 use Sulu\Component\Content\Mapper\Translation\TranslatedProperty;
 use Sulu\Component\Content\Document\Property\PropertyInterface;
 use Sulu\Component\Content\Section\SectionPropertyInterface;
-use Sulu\Component\Content\Structure;
+use Sulu\Component\Content\Structure\Structure;
 use Sulu\Component\Content\Structure\Page;
 use Sulu\Component\Content\Extension\AbstractExtension;
 use Sulu\Component\Content\StructureInterface;
@@ -67,6 +67,11 @@ use Sulu\Component\Content\Compat\Stucture\LegacyStructureConstants;
 use Sulu\Bundle\DocumentManagerBundle\Bridge\DocumentInspector;
 use Sulu\Component\Content\Document\LocalizationState;
 use Sulu\Component\Content\Document\Behavior\ContentBehavior;
+use Sulu\Bundle\DocumentManagerBundle\Bridge\PropertyEncoder;
+use Sulu\Component\Content\Document\Behavior\WorkflowStageBehavior;
+use Sulu\Component\Content\Document\Behavior\ShadowLocaleBehavior;
+use Sulu\Bundle\ContentBundle\Document\PageDocument;
+use Sulu\Component\Content\Document\Behavior\ResourceSegmentBehavior;
 
 /**
  * Maps content nodes to phpcr nodes with content types and provides utility function to handle content nodes
@@ -212,6 +217,11 @@ class ContentMapper implements ContentMapperInterface
      */
     private $inspector;
 
+    /**
+     * @var PropertyEncoder
+     */
+    private $encoder;
+
     public function __construct(
         DocumentManager $documentManager,
         StructureFactoryInterface $structureFactory,
@@ -220,6 +230,7 @@ class ContentMapper implements ContentMapperInterface
         WebspaceManagerInterface $webspaceManager,
         FormFactoryInterface $formFactory,
         DocumentInspector $inspector,
+        PropertyEncoder $encoder,
 
         SessionManagerInterface $sessionManager,
         ContentTypeManager $contentTypeManager,
@@ -244,6 +255,7 @@ class ContentMapper implements ContentMapperInterface
         $this->documentManager = $documentManager;
         $this->formFactory = $formFactory;
         $this->inspector = $inspector;
+        $this->encoder = $encoder;
 
         // deprecated
         $this->localizationFinder = $localizationFinder;
@@ -259,43 +271,6 @@ class ContentMapper implements ContentMapperInterface
 
         // optional
         $this->stopwatch = $stopwatch;
-    }
-
-    /**
-     * Create a new property translator
-     *
-     * @param string $locale
-     * @param string $structureType
-     *
-     * @return MultipleTranslatedProperties
-     */
-    protected function createPropertyTranslator($locale, $structureType = LegacyStructureConstants::TYPE_PAGE)
-    {
-        $properties = new MultipleTranslatedProperties(
-            array(
-                'changer',
-                'changed',
-                'created',
-                'creator',
-                'published',
-                'state',
-                'title',
-                'template',
-                'published',
-                'nodeType',
-                'navContexts',
-                'shadow-on',
-                'shadow-base',
-                'internal_link'
-            ),
-            $this->languageNamespace,
-            $this->internalPrefix
-        );
-
-        $properties->setLanguage($locale);
-        $properties->setStructureType($structureType);
-
-        return $properties;
     }
 
     /**
@@ -796,7 +771,6 @@ class ContentMapper implements ContentMapperInterface
     private function copyOrMove($uuid, $destParentUuid, $userId, $webspaceKey, $locale, $move = true)
     {
         throw new \Exception('Do this');
-        $propertyTranslator = $this->createPropertyTranslator($locale);
         // find localizations
         $webspace = $this->webspaceManager->findWebspaceByKey($webspaceKey);
         $localizations = $webspace->getAllLocalizations();
@@ -870,13 +844,6 @@ class ContentMapper implements ContentMapperInterface
         $session->save();
 
         return $this->loadByNode($node, $locale, $webspaceKey);
-    }
-
-    private function setChanger(NodeInterface $node, $userId, $locale)
-    {
-        $propertyTranslator = $this->createPropertyTranslator($locale);
-        $node->setProperty($propertyTranslator->getName('changer'), $userId);
-        $node->setProperty($propertyTranslator->getName('changed'), new DateTime());
     }
 
     /**
@@ -1030,8 +997,230 @@ class ContentMapper implements ContentMapperInterface
         $fields,
         $maxDepth
     ) {
-        throw new \Exception('Do This');
+        $rootDepth = substr_count($this->sessionManager->getContentPath($webspaceKey), '/');
+
+        $result = array();
+        foreach ($locales as $locale) {
+            foreach ($queryResult->getRows() as $row) {
+                $pageDepth = substr_count($row->getPath('page'), '/') - $rootDepth;
+
+                if ($maxDepth === null || $maxDepth < 0 || ($maxDepth > 0 && $pageDepth <= $maxDepth)) {
+                    $item = $this->rowToArray($row, $locale, $webspaceKey, $fields);
+
+                    if (false !== $item && !in_array($item, $result)) {
+                        $result[] = $item;
+                    }
+                }
+            };
+        }
+
+        return $result;
     }
+
+    /**
+     * converts a query row to an array
+     */
+    private function rowToArray(Row $row, $locale, $webspaceKey, $fields)
+    {
+        // reset cache
+        $this->initializeExtensionCache();
+        $templateName = $this->encoder->localizedSystemName('template', $locale);
+        $nodeTypeName = $this->encoder->localizedSystemName('nodeType', $locale);
+
+        // check and determine shadow-nodes
+        $node = $row->getNode('page');
+        $document = $this->documentManager->find($node->getIdentifier(), $locale);
+
+        $redirectType = $document->getRedirectType();
+
+        if ($redirectType === RedirectType::INTERNAL) {
+            throw new \InvalidArgumentException('WTF');
+        }
+
+        $originLocale = $locale;
+        if ($document instanceof ShadowLocaleBehavior) {
+            $locale = $document->isShadowLocaleEnabled() ? $document->getShadowLocale() : $originLocale;
+        }
+
+        $nodeState = null;
+        if ($document instanceof WorkflowStageBehavior) {
+            $nodeState = $document->getWorkflowStage();
+        }
+
+        // if page is not piblished ignore it
+        if ($nodeState !== WorkflowStage::PUBLISHED) {
+            return false;
+        }
+
+        if (!isset($url)) {
+            $structure = $this->inspector->getStructure($document);
+            $url = $this->getRowUrl($document, $structure, $webspaceKey);
+        }
+
+        if (false === $url) {
+            return;
+        }
+
+        // generate field data
+        // $fieldsData = $this->getFieldsData(
+        //     $row,
+        //     $node,
+        //     $fields[$originLocale],
+        //     $document->getStructureType(),
+        //     $webspaceKey,
+        //     $locale
+        // );
+
+        $structureType = $document->getStructureType();
+        $shortPath = str_replace($this->sessionManager->getContentPath($structureType), '', $document->getPath());
+
+        return array_merge(
+            array(
+                'uuid' => $document->getUuid(),
+                'nodeType' => $document->getRedirectType(),
+                'path' => $shortPath,
+                'changed' => $document->getChanged(),
+                'changer' => $document->getChanger(),
+                'created' => $document->getCreated(),
+                'published' => $document->getWorkflowStage() === WorkflowStage::PUBLISHED,
+                'creator' => $document->getCreator(),
+                'title' => $document->getTitle(),
+                'url' => $url,
+                'urls' => $this->getLocalizedUrlsForPage($document),
+                'locale' => $locale,
+                'webspaceKey' => $this->inspector->getWebspace($document),
+                'template' => $structureType,
+                'parent' => $document->getParent()->getUuid(),
+                'order' => null, // TODO: Implement order
+            ),
+            array()
+        );
+    }
+
+    /**
+     * Return extracted data (configured by fields array) from node
+     */
+    private function getFieldsData(Row $row, $document, $fields, $templateKey, $webspaceKey, $locale)
+    {
+        $fieldsData = array();
+        foreach ($fields as $field) {
+            // determine target for data in result array
+            if (isset($field['target'])) {
+                if (!isset($fieldsData[$field['target']])) {
+                    $fieldsData[$field['target']] = array();
+                }
+                $target = &$fieldsData[$field['target']];
+            } else {
+                $target = &$fieldsData;
+            }
+
+            // create target
+            if (!isset($target[$field['name']])) {
+                $target[$field['name']] = '';
+            }
+            if (($data = $this->getFieldData($field, $row, $document, $templateKey, $webspaceKey, $locale)) !== null) {
+                $target[$field['name']] = $data;
+            }
+        }
+
+        return $fieldsData;
+    }
+
+    /**
+     * Return data for one field
+     */
+    private function getFieldData($field, Row $row, $document, $templateKey, $webspaceKey, $locale)
+    {
+        if (isset($field['column'])) {
+            // normal data from node property
+            return $row->getValue($field['column']);
+        } elseif (isset($field['extension'])) {
+            // data from extension
+            return $this->getExtensionData(
+                $node,
+                $field['extension'],
+                $field['property'],
+                $webspaceKey,
+                $locale
+            );
+        } elseif (
+            isset($field['property'])
+            && (!isset($field['templateKey']) || $field['templateKey'] === $templateKey)
+        ) {
+            // not extension data but property of node
+            return $this->getPropertyData($node, $field['property'], $webspaceKey, $locale);
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns url of a row
+     */
+    private function getRowUrl(
+        $document,
+        Structure $structure,
+        $webspaceKey
+    ) {
+        // if homepage
+        if ($webspaceKey !== null && $this->sessionManager->getContentPath($webspaceKey) === $document->getPath()) {
+            return '/';
+        }
+
+        if ($structure->hasTag('sulu.rlp')) {
+            $property = $structure->getPropertyByTagName('sulu.rlp');
+
+            if ($property->getContentTypeName() !== 'resource_locator') {
+                return 'http://' . $document->getContent()->getProperty($property->getName())->getValue();
+            } else {
+                return $document->getResourceSegment();
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Loads urls for given page for all locales in webspace
+     * @param Page $page
+     * @param NodeInterface $node
+     * @param string $webspaceKey
+     * @param string $segmentKey
+     */
+    private function loadLocalizedUrlsForPage(PageDocument $page, NodeInterface $node, $webspaceKey, $segmentKey)
+    {
+        $localizedUrls = array();
+
+        if ($document instanceof ResourceSegmentBehavior) {
+            $localizedUrls = $this->getLocalizedUrlsForPage($page, $node, $webspaceKey, $segmentKey);
+        }
+
+        $page->setUrls($localizedUrls);
+    }
+
+    /**
+     * Returns urls for given page for all locales in webspace
+     * @param Page $page
+     * @param NodeInterface $node
+     * @param string $webspaceKey
+     * @param string $segmentKey
+     * @return array
+     */
+    private function getLocalizedUrlsForPage(PageDocument $page)
+    {
+        $localizedUrls = array();
+        $webspaceKey = $this->inspector->getWebspace($page);
+        $webspace = $this->webspaceManager->findWebspaceByKey($webspaceKey);
+
+        foreach ($webspace->getAllLocalizations() as $localization) {
+            $page = $this->documentManager->find($page->getUuid(), $localization->getLocalization());
+            $localizedUrls[$page->getLocale()] = $page->getResourceSegment();
+        }
+
+        return $localizedUrls;
+    }
+
+
 
     /**
      * {@inheritdoc}
@@ -1125,4 +1314,13 @@ class ContentMapper implements ContentMapperInterface
 
         return false;
     }
+
+    /**
+     * initializes cache for extension data
+     */
+    private function initializeExtensionCache()
+    {
+        $this->extensionDataCache = new ArrayCache();
+    }
+
 }

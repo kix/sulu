@@ -16,6 +16,8 @@ use Sulu\Component\Content\Document\Property\PropertyInterface;
 use Sulu\Component\Content\Structure;
 use Sulu\Component\Content\StructureInterface;
 use Sulu\Component\Content\Structure\Factory\StructureFactoryInterface;
+use Sulu\Bundle\DocumentManagerBundle\Bridge\PropertyEncoder;
+use Sulu\Component\Content\Document\WorkflowStage;
 
 /**
  * Basic class for content query builder
@@ -31,26 +33,6 @@ abstract class ContentQueryBuilder implements ContentQueryBuilderInterface
      * @var string
      */
     protected $languageNamespace;
-
-    /**
-     * @var MultipleTranslatedProperties
-     */
-    private $translatedProperties;
-
-    /**
-     * @var string[]
-     */
-    private $defaultProperties = array(
-        'template',
-        'changed',
-        'changer',
-        'created',
-        'creator',
-        'created',
-        'nodeType',
-        'state',
-        'shadow-on'
-    );
 
     /**
      * @var string[]
@@ -69,13 +51,11 @@ abstract class ContentQueryBuilder implements ContentQueryBuilderInterface
      */
     protected $excerpt = true;
 
-    public function __construct(StructureFactoryInterface $structureFactory, $languageNamespace)
+    public function __construct(StructureFactoryInterface $structureFactory, PropertyEncoder $encoder, $languageNamespace)
     {
         $this->structureFactory = $structureFactory;
         $this->languageNamespace = $languageNamespace;
-
-        $properties = array_merge($this->defaultProperties, $this->properties);
-        $this->translatedProperties = new MultipleTranslatedProperties($properties, $this->languageNamespace);
+        $this->encoder = $encoder;
     }
 
     /**
@@ -83,16 +63,7 @@ abstract class ContentQueryBuilder implements ContentQueryBuilderInterface
      */
     protected function getPropertyName($property)
     {
-        return $this->translatedProperties->getName($property);
-    }
-
-    /**
-     * Configures translated properties to given locale
-     * @param string $locale
-     */
-    protected function setLocale($locale)
-    {
-        $this->translatedProperties->setLanguage($locale);
+        return $this->encoder->localizedSystemName($property);
     }
 
     /**
@@ -107,7 +78,6 @@ abstract class ContentQueryBuilder implements ContentQueryBuilderInterface
         $order = array();
 
         foreach ($locales as $locale) {
-            $this->setLocale($locale);
             $additionalFields[$locale] = array();
 
             if ($this->excerpt) {
@@ -123,9 +93,9 @@ abstract class ContentQueryBuilder implements ContentQueryBuilderInterface
                 $where .= sprintf(
                     '%s ((page.[%s] = %s OR page.[%s] = %s)',
                     $where !== '' ? 'OR ' : '',
-                    $this->getPropertyName('state'),
+                    $this->encoder->localizedSystemName('state', $locale),
                     WorkflowStage::PUBLISHED,
-                    $this->getPropertyName('shadow-on'),
+                    $this->encoder->localizedSystemName('shadow-on', $locale),
                     'true'
                 );
             }

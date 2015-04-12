@@ -17,8 +17,8 @@ use Sulu\Component\Content\Structure\Property;
 use Sulu\Component\Content\Document\Property\PropertyInterface;
 use Sulu\Component\Content\Type\Core\TextArea;
 use Sulu\Component\Content\Type\Core\TextLine;
-use Sulu\Component\Content\Block\BlockProperty;
-use Sulu\Component\Content\Block\BlockPropertyType;
+use Sulu\Component\Content\Structure\Block\BlockProperty;
+use Sulu\Component\Content\Structure\Block\BlockPropertyType;
 
 class BlockContentTypeTest extends \PHPUnit_Framework_TestCase
 {

@@ -8,10 +8,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Sulu\Component\Content\Block;
+namespace Sulu\Component\Content\Structure\Block;
 
-use Sulu\Component\Content\Metadata;
-use Sulu\Component\Content\PropertyInterface;
+use Sulu\Component\Content\Structure\Metadata;
+use Sulu\Component\Content\Structure\PropertyInterface;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use JMS\Serializer\Annotation\Type;
 
@@ -91,7 +91,7 @@ class BlockPropertyType
                 return $child;
             }
         }
-        throw new NoSuchPropertyException();
+        throw new NoSuchPropertyException($name, 'Property does not exist');
     }
 
     /**
