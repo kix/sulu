@@ -13,7 +13,7 @@ namespace Sulu\Component\Content\Type\Core;
 use PHPCR\NodeInterface;
 use Sulu\Component\Content\Type\ContentTypeManagerInterface;
 use Sulu\Component\Content\Mapper\Translation\TranslatedProperty;
-use Sulu\Component\Content\Property;
+use Sulu\Component\Content\Structure\Property;
 use Sulu\Component\Content\Document\Property\PropertyInterface;
 use Sulu\Component\Content\Type\Core\TextArea;
 use Sulu\Component\Content\Type\Core\TextLine;

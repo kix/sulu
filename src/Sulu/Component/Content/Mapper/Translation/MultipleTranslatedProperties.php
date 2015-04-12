@@ -10,7 +10,7 @@
 
 namespace Sulu\Component\Content\Mapper\Translation;
 
-use Sulu\Component\Content\Property;
+use Sulu\Component\Content\Structure\Property;
 use Sulu\Component\Content\Document\Property\PropertyInterface;
 use Sulu\Component\Content\Exception\NoSuchPropertyException;
 use Sulu\Component\Content\Structure;

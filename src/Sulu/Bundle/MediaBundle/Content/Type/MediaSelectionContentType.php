@@ -15,7 +15,7 @@ use Sulu\Bundle\MediaBundle\Content\MediaSelectionContainer;
 use Sulu\Bundle\MediaBundle\Media\Manager\MediaManagerInterface;
 use Sulu\Component\Content\Type\ComplexContentType;
 use Sulu\Component\Content\Document\Property\PropertyInterface;
-use Sulu\Component\Content\PropertyParameter;
+use Sulu\Component\Content\Structure\PropertyParameter;
 use Sulu\Component\Util\ArrayableInterface;
 
 /**

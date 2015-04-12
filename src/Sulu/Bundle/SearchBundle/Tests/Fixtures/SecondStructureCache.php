@@ -10,10 +10,10 @@
 
 namespace Sulu\Bundle\SearchBundle\Tests\Fixtures;
 
-use Sulu\Component\Content\Property;
+use Sulu\Component\Content\Structure\Property;
 use Sulu\Component\Content\Block\BlockProperty;
 use Sulu\Component\Content\Block\BlockPropertyType;
-use Sulu\Component\Content\PropertyTag;
+use Sulu\Component\Content\Structure\PropertyTag;
 use Sulu\Component\Content\Section\SectionProperty;
 use Sulu\Component\Content\Structure\Page;
 

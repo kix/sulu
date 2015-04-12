@@ -10,7 +10,7 @@
 
 namespace Sulu\Component\Content\Type\Core;
 
-use Sulu\Component\Content\PropertyParameter;
+use Sulu\Component\Content\Structure\PropertyParameter;
 use Sulu\Component\Content\Type\SimpleContentType;
 
 /**

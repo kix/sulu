@@ -17,7 +17,7 @@ use Psr\Log\LoggerInterface;
 use Sulu\Bundle\ContentBundle\Content\InternalLinksContainer;
 use Sulu\Component\Content\Type\ComplexContentType;
 use Sulu\Component\Content\Document\Property\PropertyInterface;
-use Sulu\Component\Content\PropertyParameter;
+use Sulu\Component\Content\Structure\PropertyParameter;
 use Sulu\Component\Content\Query\ContentQueryBuilderInterface;
 use Sulu\Component\Content\Query\ContentQueryExecutorInterface;
 use Sulu\Component\Util\ArrayableInterface;

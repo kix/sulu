@@ -19,8 +19,8 @@ use Sulu\Component\Content\Block\BlockProperty;
 use Sulu\Component\Content\Block\BlockPropertyType;
 use Sulu\Component\Content\BreadcrumbItemInterface;
 use Sulu\Component\Content\Mapper\ContentEvents;
-use Sulu\Component\Content\Property;
-use Sulu\Component\Content\PropertyTag;
+use Sulu\Component\Content\Structure\Property;
+use Sulu\Component\Content\Structure\PropertyTag;
 use Sulu\Component\Content\Section\SectionProperty;
 use Sulu\Component\Content\Structure;
 use Sulu\Component\Content\Extension\AbstractExtension;
@@ -3598,7 +3598,7 @@ class ContentMapperTest extends PhpcrTestCase
         $node = $this->getMock('PHPCR\NodeInterface', array(), array(), '', false);
         $parentNode = $this->getMock('PHPCR\NodeInterface', array(), array(), '', false);
 
-        $property = $this->getMock('Sulu\Component\Content\Property', array(), array(), '', false);
+        $property = $this->getMock('Sulu\Component\Content\Structure\Property', array(), array(), '', false);
         $structure = $this->getMock('Sulu\Component\Content\Structure', array(), array(), '', false);
 
         $queryResult->expects($this->any())

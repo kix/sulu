@@ -13,7 +13,7 @@ namespace Sulu\Component\Content\Rlp;
 use Doctrine\ORM\EntityManager;
 use PHPCR\SessionInterface;
 use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
-use Sulu\Component\Content\Property;
+use Sulu\Component\Content\Structure\Property;
 use Sulu\Component\Content\Type\Core\ResourceLocator;
 use Sulu\Component\Content\Type\Core\Rlp\Mapper\PhpcrMapper;
 use Sulu\Component\Content\Type\Core\Rlp\Mapper\RlpMapperInterface;

@@ -70,6 +70,33 @@ class Property extends Item implements PropertyInterface
      */
     public $structure;
 
+
+    /**
+     * @deprecated This should never be instantiated by anything other than the XML loader
+     */
+    public function __construct(
+        $name,
+        $metaData,
+        $contentTypeName,
+        $mandatory = false,
+        $multilingual = true,
+        $maxOccurs = 1,
+        $minOccurs = 1,
+        $params = array(),
+        $tags = array(),
+        $col = null
+    ) {
+        $this->type = $contentTypeName;
+        $this->required = $mandatory;
+        $this->maxOccurs = $maxOccurs;
+        $this->minOccurs = $minOccurs;
+        $this->localized = $multilingual;
+        $this->name = $name;
+        $this->parameters = $params;
+        $this->tags = $tags;
+        $this->colSpan = $col;
+    }
+
     public function getIsMultiple()
     {
         return $this->minOccurs !== $this->maxOccurs;

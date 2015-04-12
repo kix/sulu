@@ -3,7 +3,7 @@
 namespace Sulu\Bundle\LocationBundle\Tests\Unit\Content\Type;
 
 use Sulu\Bundle\LocationBundle\Content\Type\LocationContentType;
-use Sulu\Component\Content\PropertyParameter;
+use Sulu\Component\Content\Structure\PropertyParameter;
 
 class LocationContentTypeTest extends \PHPUnit_Framework_TestCase
 {

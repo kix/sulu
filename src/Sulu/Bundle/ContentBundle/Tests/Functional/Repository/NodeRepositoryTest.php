@@ -19,8 +19,8 @@ use Sulu\Bundle\ContentBundle\Content\Type\SmartContent\SmartContentQueryBuilder
 use Sulu\Bundle\ContentBundle\Repository\NodeRepository;
 use Sulu\Bundle\ContentBundle\Repository\NodeRepositoryInterface;
 use Sulu\Bundle\TestBundle\Testing\PhpcrTestCase;
-use Sulu\Component\Content\Property;
-use Sulu\Component\Content\PropertyTag;
+use Sulu\Component\Content\Structure\Property;
+use Sulu\Component\Content\Structure\PropertyTag;
 use Sulu\Component\Content\Query\ContentQueryExecutor;
 use Sulu\Component\Content\Structure;
 use Sulu\Component\Content\Extension\AbstractExtension;

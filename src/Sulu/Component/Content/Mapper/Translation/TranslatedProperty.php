@@ -11,7 +11,7 @@
 namespace Sulu\Component\Content\Mapper\Translation;
 
 use Sulu\Component\Content\Document\Property\PropertyInterface;
-use Sulu\Component\Content\PropertyTag;
+use Sulu\Component\Content\Structure\PropertyTag;
 
 /**
  * Wrapper for translated properties

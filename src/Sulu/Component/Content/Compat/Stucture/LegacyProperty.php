@@ -30,7 +30,7 @@ use JMS\Serializer\Annotation\HandlerCallback;
  * @Discriminator(
  *     field = "propertyType",
  *     map = {
- *         "property": "Sulu\Component\Content\Property",
+ *         "property": "Sulu\Component\Content\Structure\Property",
  *         "block": "Sulu\Component\Content\Block\BlockProperty",
  *         "section": "Sulu\Component\Content\Section\SectionProperty"
  *     }
@@ -89,14 +89,14 @@ class Property implements PropertyInterface, \JsonSerializable
     /**
      * parameter of property to merge with parameter of content type
      * @var array
-     * @Type("array<string,Sulu\Component\Content\PropertyParameter>")
+     * @Type("array<string,Sulu\Component\Content\Structure\PropertyParameter>")
      */
     private $params;
 
     /**
      * tags defined in xml
      * @var PropertyTag[]
-     * @Type("array<Sulu\Component\Content\PropertyTag>")
+     * @Type("array<Sulu\Component\Content\Structure\PropertyTag>")
      */
     private $tags;
 
@@ -212,7 +212,7 @@ class Property implements PropertyInterface, \JsonSerializable
 
     /**
      * returns tags defined in xml
-     * @return \Sulu\Component\Content\PropertyTag[]
+     * @return \Sulu\Component\Content\Structure\PropertyTag[]
      */
     public function getTags()
     {

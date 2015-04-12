@@ -32,7 +32,7 @@ class PropertyParameter
 
     /**
      * @var string|bool|array
-     * @Type("array<string,Sulu\Component\Content\PropertyParameter>")
+     * @Type("array<string,Sulu\Component\Content\Structure\PropertyParameter>")
      */
     private $value;
 

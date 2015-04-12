@@ -85,7 +85,7 @@ interface PropertyInterface
 
     /**
      * returns tags defined in xml
-     * @return \Sulu\Component\Content\PropertyTag[]
+     * @return \Sulu\Component\Content\Structure\PropertyTag[]
      */
     public function getTags();
 
