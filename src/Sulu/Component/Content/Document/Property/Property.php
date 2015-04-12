@@ -2,15 +2,30 @@
 
 namespace Sulu\Component\Content\Document\Property;
 
+use Sulu\Component\Content\Structure\PropertyInterface as StructurePropertyInterface;
+
+/**
+ * Value object for content type rendering.
+ *
+ * TODO: Should probably be removed.
+ * TODO: Remove the structure property from this class. It should be passed as an argument
+ *       to the content types.
+ */
 class Property implements PropertyInterface
 {
     private $value;
     private $name;
+    private $structureProperty;
 
     public function __construct($name, $document)
     {
         $this->name = $name;
         $this->document = $document;
+    }
+
+    public function setStructureProperty(StructurePropertyInterface $structureProperty)
+    {
+        $this->structureProperty = $structureProperty;
     }
 
     /**
@@ -43,6 +58,14 @@ class Property implements PropertyInterface
     public function getDocument() 
     {
         return $this->document;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getStructureProperty()
+    {
+        return $this->structureProperty;
     }
     
 }

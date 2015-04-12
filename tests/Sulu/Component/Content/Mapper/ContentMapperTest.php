@@ -3461,7 +3461,7 @@ class ContentMapperTest extends PhpcrTestCase
             true,
             null,
             null,
-            Structure::STATE_PUBLISHED
+            WorkflowStage::PUBLISHED
         );
         $urls = $data[0]->getUrls();
 
@@ -3498,7 +3498,7 @@ class ContentMapperTest extends PhpcrTestCase
             true,
             $data[0]->getUuid(),
             null,
-            Structure::STATE_PUBLISHED
+            WorkflowStage::PUBLISHED
         );
         $urls = $data[1]->getUrls();
 
@@ -3623,7 +3623,7 @@ class ContentMapperTest extends PhpcrTestCase
                 function ($propertyName) {
                     switch ($propertyName) {
                         case 'i18n:en-state':
-                            return Structure::STATE_PUBLISHED;
+                            return WorkflowStage::PUBLISHED;
                             break;
                         case 'i18n:en-template':
                             return 'overview';

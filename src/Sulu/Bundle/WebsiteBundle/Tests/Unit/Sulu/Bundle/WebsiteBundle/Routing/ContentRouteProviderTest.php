@@ -292,7 +292,7 @@ class ContentRouteProviderTest extends \PHPUnit_Framework_TestCase
         $webspace->setTheme($theme);
         $portal->setWebspace($webspace);
 
-        $structure = $this->getStructureMock($uuid, Structure::STATE_PUBLISHED, RedirectType::INTERNAL);
+        $structure = $this->getStructureMock($uuid, WorkflowStage::PUBLISHED, RedirectType::INTERNAL);
         $structure->expects($this->any())
             ->method('getResourceLocator')
             ->will($this->returnValue('/other-test'));
@@ -415,7 +415,7 @@ class ContentRouteProviderTest extends \PHPUnit_Framework_TestCase
     /**
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    protected function getStructureMock($uuid, $state = Structure::STATE_PUBLISHED, $type = RedirectType::NONE)
+    protected function getStructureMock($uuid, $state = WorkflowStage::PUBLISHED, $type = RedirectType::NONE)
     {
         $structure = $this->getMockForAbstractClass(
             '\Sulu\Component\Content\Structure\Page',

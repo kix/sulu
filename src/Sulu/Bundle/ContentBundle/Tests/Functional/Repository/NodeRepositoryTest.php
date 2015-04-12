@@ -80,7 +80,7 @@ class NodeRepositoryTest extends PhpcrTestCase
             'article' => 'Test'
         );
 
-        return $this->mapper->save($data, 'overview', 'default', 'en', 1, true, null, null, Structure::STATE_PUBLISHED);
+        return $this->mapper->save($data, 'overview', 'default', 'en', 1, true, null, null, WorkflowStage::PUBLISHED);
     }
 
     public function testGet()

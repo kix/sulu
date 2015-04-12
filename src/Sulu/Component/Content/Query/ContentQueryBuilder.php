@@ -124,7 +124,7 @@ abstract class ContentQueryBuilder implements ContentQueryBuilderInterface
                     '%s ((page.[%s] = %s OR page.[%s] = %s)',
                     $where !== '' ? 'OR ' : '',
                     $this->getPropertyName('state'),
-                    Structure::STATE_PUBLISHED,
+                    WorkflowStage::PUBLISHED,
                     $this->getPropertyName('shadow-on'),
                     'true'
                 );

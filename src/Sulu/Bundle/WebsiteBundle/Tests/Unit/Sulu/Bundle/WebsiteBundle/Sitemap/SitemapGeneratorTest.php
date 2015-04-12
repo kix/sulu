@@ -62,7 +62,7 @@ class SitemapGeneratorTest extends PhpcrTestCase
             ->method('getStructures')
             ->will($this->returnCallback(array($this, 'structuresCallback')));
 
-        $this->contents->setProperty('i18n:en-state', Structure::STATE_PUBLISHED);
+        $this->contents->setProperty('i18n:en-state', WorkflowStage::PUBLISHED);
         $this->contents->setProperty('i18n:en-nodeType', RedirectType::NONE);
         $this->session->save();
 

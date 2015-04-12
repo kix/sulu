@@ -55,7 +55,7 @@ class XmlLoader extends XmlLegacyLoader
     private function createProperty($propertyName, $propertyData)
     {
         if ($propertyData['type'] === 'block') {
-            return $this->createBlock($propertyData);
+            // return $this->createBlock($propertyData);
         }
 
         if ($propertyData['type'] === 'section') {

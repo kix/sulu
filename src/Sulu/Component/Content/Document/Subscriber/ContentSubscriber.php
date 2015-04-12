@@ -171,6 +171,9 @@ class ContentSubscriber extends AbstractMappingSubscriber
             $realProperty = $propertyContainer->getProperty($propertyName);
             $property = new Property($phpcrName, $document);
 
+            // TODO: This is a hack to avoid breaking the content type API
+            $property->setStructureProperty($structureProperty);
+
             $property->setValue($realProperty->getValue());
 
             $contentType->write(

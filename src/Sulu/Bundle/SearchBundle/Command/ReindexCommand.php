@@ -85,7 +85,7 @@ EOT
                     $structure = $contentMapper->load($node->getIdentifier(), $webspaceKey, $locale);
 
                     try {
-                        if ($structure->getNodeState() === Structure::STATE_PUBLISHED) {
+                        if ($structure->getNodeState() === WorkflowStage::PUBLISHED) {
                             $output->writeln(
                                 '  [+] <comment>Indexing published page (locale: ' . $locale . ')</comment>: ' .
                                 $node->getPath()

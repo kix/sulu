@@ -17,11 +17,10 @@ use Sulu\Component\Content\Mapper\ContentMapperInterface;
 use Sulu\Component\Content\Mapper\ContentMapperRequest;
 use Sulu\Component\Content\Structure\PropertyParameter;
 use Sulu\Component\Content\Query\ContentQueryExecutor;
-use Sulu\Component\Content\Structure;
-use Sulu\Component\Content\StructureInterface;
 use Sulu\Component\Content\Structure\Factory\StructureFactoryInterface;
 use Sulu\Component\PHPCR\SessionManager\SessionManagerInterface;
 use Sulu\Component\Webspace\Manager\WebspaceManagerInterface;
+use Sulu\Component\Content\Document\WorkflowStage;
 
 /**
  * @group functional
@@ -156,7 +155,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
                 ->setLocale('en')
                 ->setUserId(1)
                 ->setType('page')
-                ->setState(Structure::STATE_PUBLISHED);
+                ->setState(WorkflowStage::PUBLISHED);
 
             $node = $this->mapper->saveRequest($request);
             $nodes[$node->getUuid()] = $node;
@@ -221,7 +220,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            Structure::STATE_PUBLISHED
+            WorkflowStage::PUBLISHED
         );
         $products = $this->mapper->save(
             array('title' => 'Products', 'url' => '/products'),
@@ -232,7 +231,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            Structure::STATE_PUBLISHED
+            WorkflowStage::PUBLISHED
         );
 
         $nodes = array();
@@ -252,7 +251,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
                 true,
                 null,
                 $news->getUuid(),
-                Structure::STATE_PUBLISHED
+                WorkflowStage::PUBLISHED
             );
             $nodes[$node->getUuid()] = $node;
         }
@@ -368,7 +367,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
                 true,
                 null,
                 null,
-                Structure::STATE_PUBLISHED
+                WorkflowStage::PUBLISHED
             );
             $nodes[$node->getUuid()] = $node;
         }
@@ -435,7 +434,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            Structure::STATE_PUBLISHED
+            WorkflowStage::PUBLISHED
         );
         $nodes[$node->url] = $node;
         $node = $this->mapper->save(
@@ -450,7 +449,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            Structure::STATE_PUBLISHED
+            WorkflowStage::PUBLISHED
         );
         $nodes[$node->url] = $node;
         $node = $this->mapper->save(
@@ -465,7 +464,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            Structure::STATE_PUBLISHED
+            WorkflowStage::PUBLISHED
         );
         $nodes[$node->url] = $node;
         $node = $this->mapper->save(
@@ -480,7 +479,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
             true,
             null,
             null,
-            Structure::STATE_PUBLISHED
+            WorkflowStage::PUBLISHED
         );
         $nodes[$node->url] = $node;
 
@@ -690,7 +689,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
                 $nodesEn['/team']->getUuid(),
                 false,
                 null,
-                Structure::STATE_TEST
+                WorkflowStage::TEST
             )
         );
         $nodesEn = array_merge(
@@ -717,7 +716,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
                 $nodesEn['/team']->getUuid(),
                 false,
                 null,
-                Structure::STATE_TEST
+                WorkflowStage::TEST
             )
         );
 
@@ -785,7 +784,7 @@ class SmartContentQueryBuilderTest extends SuluTestCase
         $parent = null,
         $isShadow = false,
         $shadowLocale = '',
-        $state = Structure::STATE_PUBLISHED
+        $state = WorkflowStage::PUBLISHED
     ) {
         $node = $this->mapper->save(
             $data,

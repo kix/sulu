@@ -72,7 +72,7 @@ class SaveStructureTest extends BaseTestCase
             ->setPartialUpdate(true)
             ->setUuid(null)
             ->setParentUuid(null)
-            ->setState(Structure::STATE_PUBLISHED);
+            ->setState(WorkflowStage::PUBLISHED);
 
         $mapper->saveRequest($request);
 

@@ -63,7 +63,7 @@ class BaseTestCase extends SuluTestCase
 
         /** @var ContentMapperInterface $mapper */
         $mapper = $this->getContainer()->get('sulu.content.mapper');
-        $structure = $mapper->save($data, 'default', 'sulu_io', 'de', 1, true, null, null, Structure::STATE_PUBLISHED);
+        $structure = $mapper->save($data, 'default', 'sulu_io', 'de', 1, true, null, null, WorkflowStage::PUBLISHED);
 
         return $structure;
     }

@@ -72,7 +72,7 @@ class SnippetTwigExtensionTest extends SuluTestCase
             true,
             null,
             null,
-            Structure::STATE_PUBLISHED,
+            WorkflowStage::PUBLISHED,
             null,
             null,
             LegacyStructureConstants::TYPE_SNIPPET
@@ -93,7 +93,7 @@ class SnippetTwigExtensionTest extends SuluTestCase
             true,
             null,
             null,
-            Structure::STATE_PUBLISHED,
+            WorkflowStage::PUBLISHED,
             null,
             null,
             LegacyStructureConstants::TYPE_SNIPPET
@@ -131,7 +131,7 @@ class SnippetTwigExtensionTest extends SuluTestCase
             true,
             null,
             null,
-            Structure::STATE_PUBLISHED,
+            WorkflowStage::PUBLISHED,
             null,
             null,
             LegacyStructureConstants::TYPE_SNIPPET
@@ -146,7 +146,7 @@ class SnippetTwigExtensionTest extends SuluTestCase
             true,
             $dataDe->getUuid(),
             null,
-            Structure::STATE_PUBLISHED,
+            WorkflowStage::PUBLISHED,
             null,
             null,
             LegacyStructureConstants::TYPE_SNIPPET

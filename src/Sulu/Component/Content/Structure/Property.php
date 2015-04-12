@@ -73,11 +73,12 @@ class Property extends Item implements PropertyInterface
 
     /**
      * @deprecated This should never be instantiated by anything other than the XML loader
+     *             and the XML loader does not use the constructor.
      */
     public function __construct(
-        $name,
-        $metaData,
-        $contentTypeName,
+        $name = null,
+        $metaData = null,
+        $contentTypeName = null,
         $mandatory = false,
         $multilingual = true,
         $maxOccurs = 1,
@@ -193,4 +194,5 @@ class Property extends Item implements PropertyInterface
     {
         return $this->type;
     }
+    
 }

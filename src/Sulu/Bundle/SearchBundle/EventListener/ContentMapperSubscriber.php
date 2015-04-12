@@ -69,7 +69,7 @@ class ContentMapperSubscriber implements EventSubscriberInterface
     {
         $structure = $event->getStructure();
 
-        if ($structure->getNodeState() === Structure::STATE_PUBLISHED) {
+        if ($structure->getNodeState() === WorkflowStage::PUBLISHED) {
             $this->searchManager->index($structure);
             return;
         }

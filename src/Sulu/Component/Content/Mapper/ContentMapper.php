@@ -734,7 +734,7 @@ class ContentMapper implements ContentMapperInterface
                 false,
                 $uuid,
                 null,
-                Structure::STATE_TEST,
+                WorkflowStage::TEST,
                 $structure->getIsShadow(),
                 $structure->getShadowBaseLanguage(),
                 $structureType
