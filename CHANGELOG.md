@@ -2,6 +2,7 @@ CHANGELOG for Sulu
 ==================
 
 * dev-develop
+    * BUGFIX      #996 [ContentBundle]   Fixed change language in add form
     * ENHANCEMENT #988 [MediaBundle]     Set working defaults for ghostscript and caching headers
     * BUGFIX      #976 [MediaBundle]     Fix media scale mode parameter
     * FEATURE     #975 [MediaBundle]     Make Storage path and segments configurateable
