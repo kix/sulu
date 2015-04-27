@@ -15724,6 +15724,7 @@ define('aura/ext/mediator', ['eventemitter','underscore'],function () {
 
       var attachListener = function(listenerType) {
         return function (name, listener, context) {
+          if (this.stopped) { return; }
           if (!_.isFunction(listener) || !_.isString(name)) {
             throw new Error('Invalid arguments passed to sandbox.' + listenerType);
           }
@@ -15767,7 +15768,7 @@ define('aura/ext/mediator', ['eventemitter','underscore'],function () {
        * @param {Function} listener   Listener function to stop.
        */
       app.sandbox.off = function (name, listener) {
-        if(!this._events) { return; }
+        if (!this._events) { return; }
         this._events = _.reject(this._events, function (evt) {
           var ret = (evt.name === name);
           if (ret) { mediator.off(name, evt.callback); }
@@ -15782,6 +15783,7 @@ define('aura/ext/mediator', ['eventemitter','underscore'],function () {
        * @param {Object} payload    Payload emitted
        */
       app.sandbox.emit = function () {
+        if (this.stopped) { return; }
         var debug = app.config.debug;
         if(debug.enable && (debug.components.length === 0 || debug.components.indexOf("aura:mediator") !== -1)){
           var eventData = Array.prototype.slice.call(arguments);
@@ -15865,10 +15867,10 @@ define('aura/ext/components', [],function() {
 
       before.then(function() {
         return fn.apply(context, args);
-      }).then(function(result) {
-        return invokeCallbacks("after", fnName, context, args.concat(result)).then(function() {
-          core.data.when(result).then(function() {
-            dfd.resolve(result) 
+      }).then(function(_res) {
+        return invokeCallbacks("after", fnName, context, args.concat(_res)).then(function() {
+          core.data.when(_res).then(function() {
+            dfd.resolve(_res);
           });
         }, dfd.reject);
       }).fail(function(err) {
@@ -16297,6 +16299,7 @@ define('aura/ext/components', [],function() {
          *                                      will be stopped before start.
          */
         app.sandbox.start = function (list, options) {
+          if (this.stopped) { return; }
           var event = ['aura', 'sandbox', 'start'].join(app.config.mediator.delimiter);
           app.core.mediator.emit(event, this);
           var children = this._children || [];
@@ -27161,19 +27164,17 @@ define('bower_components/aura/lib/logger',[], function() {
   };
 
   Logger.prototype.enable = function() {
+    if (Function.prototype.bind && typeof console === "object") {
+      var logFns = ["log", "warn", "error"];
+      for (var i = 0; i < logFns.length; i++) {
+        console[logFns[i]] = Function.prototype.call.bind(console[logFns[i]], console);
+      }
+    }
+
     this._log     = (console.log   || noop);
     this._warn    = (console.warn  || this._log);
     this._error   = (console.error || this._log);
     this._enabled = true;
-
-    try {
-      if (Function.prototype.bind && typeof console === "object") {
-        var logFns = ["log", "warn", "error"];
-        for (var i = 0; i < logFns.length; i++) {
-          console[logFns[i]] = Function.prototype.call.bind(console[logFns[i]], console);
-        }
-      }
-    } catch(e) {}
 
     return this;
   };
@@ -27889,7 +27890,7 @@ define('__component__$navigation@husky',[],function() {
             mainItem: [
                 '<li class="js-navigation-items navigation-items" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '   <div <% if (item.items && item.items.length > 0) { %> class="navigation-items-toggle" <% } %> >',
-                '       <a class="<% if (!!item.action) { %>js-navigation-item <% } %>navigation-item" href="#">',
+                '       <a class="<% if (!!item.action || !!item.event) { %>js-navigation-item <% } %>navigation-item" href="#">',
                 '           <span class="<%= icon %> navigation-item-icon"></span>',
                 '           <span class="navigation-item-title"><%= translate(item.title) %></span>',
                 '       </a>',
@@ -27905,7 +27906,7 @@ define('__component__$navigation@husky',[],function() {
             subToggleItem: [
                 '   <li class="js-navigation-items navigation-subitems" id="<%= item.id %>" data-id="<%= item.id %>">',
                 '       <div class="navigation-subitems-toggle">',
-                '           <a class="<% if (!!item.action) { %>js-navigation-item <% } %> navigation-item" href="#"><%= translate(item.title) %></a>',
+                '           <a class="<% if (!!item.action || !!item.event) { %>js-navigation-item <% } %> navigation-item" href="#"><%= translate(item.title) %></a>',
                 '           <% if (item.hasSettings) { %>',
                 '           <a class="fa-cogwheel navigation-settings-icon js-navigation-settings" href="#"></a>',
                 '           <% } %>',
@@ -28689,31 +28690,39 @@ define('__component__$navigation@husky',[],function() {
             var $subItem = this.sandbox.dom.createElement(event.currentTarget),
                 $items = this.sandbox.dom.parents(event.currentTarget, '.js-navigation-items'),
                 $parent = this.sandbox.dom.parent(event.currentTarget),
-                item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
+                item;
 
             if (this.sandbox.dom.hasClass($subItem, 'js-navigation-item')) {
                 $subItem = this.sandbox.dom.createElement(this.sandbox.dom.closest(event.currentTarget, 'li'));
             }
+
+            item = this.getItemById(this.sandbox.dom.data($subItem, 'id'));
 
             // if toggle was clicked, do not set active and selected
             if (this.sandbox.dom.hasClass($parent, 'navigation-items-toggle') || this.sandbox.dom.hasClass($parent, 'navigation-subitems-toggle')) {
                 return;
             }
 
-            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
-            this.sandbox.dom.addClass($subItem, 'is-selected');
+            if (!item.event) {
+                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-selected', this.$el), 'is-selected');
+                this.sandbox.dom.addClass($subItem, 'is-selected');
 
-            this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-active', this.$el), 'is-active');
-            this.sandbox.dom.addClass($items, 'is-active');
+                this.sandbox.dom.removeClass(this.sandbox.dom.find('.is-active', this.$el), 'is-active');
+                this.sandbox.dom.addClass($items, 'is-active');
+            }
 
             var extendedItem = item;
-            if(!!options) {
+
+            if (!!options) {
                 extendedItem = this.sandbox.util.extend(true, {}, extendedItem, options);
             }
 
             if (emit !== false) {
-                // emit event
-                this.sandbox.emit('husky.navigation.item.select', extendedItem);
+                if (item.event) {
+                    this.sandbox.emit('husky.navigation.item.event.' + item.event, item.eventArgs);
+                } else {
+                    this.sandbox.emit('husky.navigation.item.select', extendedItem);
+                }
             }
 
             if (this.hasDataNavigation()) {
@@ -29349,6 +29358,7 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             editedErrorClass: 'server-validation-error',
             newRecordId: 'newrecord',
             gridIconClass: 'grid-icon',
+            gridImageClass: 'grid-image',
             childWrapperClass: 'child-wrapper',
             parentClass: 'children-toggler',
             noChildrenClass: 'no-children',
@@ -29392,7 +29402,12 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
                 '   <input type="text" class="form-element husky-validate ' + constants.editableInputClass + '" value="<%= value %>">',
                 '</div>'
             ].join(''),
-            img: '<img alt="<%= alt %>" src="<%= src %>"/>',
+            img: [
+                '<div class="' + constants.gridImageClass + '">',
+                '   <img alt="<%= alt %>" src="<%= src %>"/>',
+                '   <div class="fa-coffee empty"></div>',
+                '</div>'
+            ].join(''),
             childWrapper: '<div class="' + constants.childWrapperClass + '"></div>',
             toggleIcon: '<span class="' + constants.toggleIconClass + '"></span>',
             icon: [
@@ -29815,38 +29830,36 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
         renderBodyRow: function(record, prepend) {
             this.removeNewRecordRow();
 
-            if (!this.table.rows[record.id]) {
-                var $row = this.sandbox.dom.createElement(templates.row),
-                    $overrideElement = (!!this.table.rows[record.id]) ? this.table.rows[record.id].$el : null,
-                    hasParent = this.hasParent(record);
+            var $row = this.sandbox.dom.createElement(templates.row),
+                $overrideElement = (!!this.table.rows[record.id]) ? this.table.rows[record.id].$el : null,
+                hasParent = this.hasParent(record);
 
-                record.id = (!!record.id) ? record.id : constants.newRecordId;
-                this.sandbox.dom.data($row, 'id', record.id);
+            record.id = (!!record.id) ? record.id : constants.newRecordId;
+            this.sandbox.dom.data($row, 'id', record.id);
 
-                // render the parents before rendering the children
-                if (hasParent) {
-                    if (!this.table.rows[record.parent]) {
-                        this.renderBodyRow(this.data.embedded[this.datagrid.getRecordIndexById(record.parent)], prepend);
-                    }
-                    this.table.rows[record.parent].childrenLoaded = true;
+            // render the parents before rendering the children
+            if (hasParent) {
+                if (!this.table.rows[record.parent]) {
+                    this.renderBodyRow(this.data.embedded[this.datagrid.getRecordIndexById(record.parent)], prepend);
                 }
-
-                this.table.rows[record.id] = {
-                    $el: $row,
-                    cells: {},
-                    childrenLoaded: !!this.table.rows[record.id] ? this.table.rows[record.id].childrenLoaded : false,
-                    childrenExpanded: false,
-                    parent: hasParent ? record.parent : null,
-                    hasChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : false,
-                    level: 1
-                };
-
-                this.renderRowSelectItem(record.id);
-                this.renderBodyCellsForRow(record);
-                this.renderRowRemoveItem(record.id);
-                this.insertBodyRow(record, $overrideElement, prepend);
-                this.executeRowPostRenderActions(record);
+                this.table.rows[record.parent].childrenLoaded = true;
             }
+
+            this.table.rows[record.id] = {
+                $el: $row,
+                cells: {},
+                childrenLoaded: !!this.table.rows[record.id] ? this.table.rows[record.id].childrenLoaded : false,
+                childrenExpanded: false,
+                parent: hasParent ? record.parent : null,
+                hasChildren: (!!record[this.datagrid.options.childrenPropertyName]) ? record[this.datagrid.options.childrenPropertyName] : false,
+                level: 1
+            };
+
+            this.renderRowSelectItem(record.id);
+            this.renderBodyCellsForRow(record);
+            this.renderRowRemoveItem(record.id);
+            this.insertBodyRow(record, $overrideElement, prepend);
+            this.executeRowPostRenderActions(record);
         },
 
         /**
@@ -30209,6 +30222,13 @@ define('husky_components/datagrid/decorators/table-view',[],function() {
             if (!!this.options.icons) {
                 this.sandbox.dom.on(this.table.$body, 'click', this.iconClickHandler.bind(this), '.' + constants.gridIconClass);
             }
+            this.sandbox.dom.on(this.table.$body.find('img'), 'error', function() {
+                $(this).remove();
+            });
+
+            this.sandbox.dom.on(this.table.$body.find('img'), 'load', function() {
+                $(this).parent().find('.fa-coffee').remove();
+            });
             this.sandbox.dom.on(this.table.$container, 'scroll', this.containerScrollHandler.bind(this));
             this.sandbox.dom.on(this.table.$body, 'click', this.radioButtonClickHandler.bind(this), 'input[type="radio"]');
         },
@@ -30959,6 +30979,14 @@ define('husky_components/datagrid/decorators/thumbnail-view',[],function() {
                 this.sandbox.dom.stopPropagation(event);
                 this.downloadHandler(id);
             }.bind(this), '.' + constants.downloadClass);
+
+            this.sandbox.dom.on(this.$thumbnails[id].find('img'), 'error', function() {
+                this.$thumbnails[id].find('img').remove();
+            }.bind(this));
+
+            this.sandbox.dom.on(this.$thumbnails[id].find('img'), 'load', function() {
+                this.$thumbnails[id].find('.fa-coffee').remove();
+            }.bind(this));
 
             if (!!this.options.selectable) {
                 this.sandbox.dom.on(this.$thumbnails[id], 'dblclick', function() {
@@ -31729,7 +31757,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 resizeListeners: true,
                 resultKey: 'items',
                 selectedCounter: false,
-                selectedCounterText: 'public.elements-selected'
+                selectedCounterText: 'public.elements-selected',
+                viewSpacingBottom: 110
             },
 
             types = {
@@ -31752,10 +31781,6 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 paginations: {
                     dropdown: decoratorDropdownPagination
                 }
-            },
-
-            constants = {
-                viewSpacingBottom: 80
             },
 
             filters = {
@@ -33042,7 +33067,8 @@ define('husky_components/datagrid/decorators/dropdown-pagination',[],function() 
                 if (!!this.paginations[this.paginationId] && !!this.paginations[this.paginationId].getHeight) {
                     height -= this.paginations[this.paginationId].getHeight();
                 }
-                height -= constants.viewSpacingBottom;
+                height -= this.options.viewSpacingBottom;
+
                 return height;
             },
 
@@ -34309,12 +34335,12 @@ define('__component__$search@husky',[], function() {
  *      - data: if no url is provided
  *      - selected: the item that's selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
- *      - preselect - either true (for url) or position / title  (see preselector for more information)
+ *      - preselect - either true (for url) or position / name  (see preselector for more information)
  *      - skin - string of class to add to the components element (e.g. 'overlay')
  *      - preselector:
  *          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case
  *          - position: compares items position against whats defined in options.preselect
- *          - title: compares items title against whats defined in options.preselect
+ *          - name: compares items name against whats defined in options.preselect
  *      - forceReload - defines if tabs are forcing page to reload
  *      - forceSelect - forces tabs to select first item, if no selected item has been found
  *      - preSelectEvent.enabled - when enabled triggers the item pre select event
@@ -34560,10 +34586,7 @@ define('__component__$tabs@husky',[],function() {
         },
 
         generateIds: function(data) {
-            if (!data.id) {
-                data.id = this.getRandId();
-            }
-            this.sandbox.util.foreach(data.items, function(item) {
+            this.sandbox.util.foreach(data, function(item) {
                 if (!item.id) {
                     item.id = this.getRandId();
                 }
@@ -34592,10 +34615,10 @@ define('__component__$tabs@husky',[],function() {
             this.items = [];
             this.domItems = {};
 
-            this.sandbox.util.foreach(data.items, function(item, index) {
+            this.sandbox.util.foreach(data, function(item, index) {
                 this.items[item.id] = item;
                 $item = this.sandbox.dom.createElement(
-                    '<li data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.title) + '</a></li>'
+                    '<li data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.name) + '</a></li>'
                 );
                 this.sandbox.dom.append($list, $item);
 
@@ -34610,7 +34633,7 @@ define('__component__$tabs@husky',[],function() {
                 if (!!this.options.preselect) {
                     if ((this.options.preselector === 'url' && !!data.url && data.url === item.action) ||
                         (this.options.preselector === 'position' && (index + 1).toString() === this.options.preselect.toString()) ||
-                        (this.options.preselector === 'title' && item.title === this.options.preselect)) {
+                        (this.options.preselector === 'name' && item.name === this.options.preselect)) {
                         this.sandbox.dom.addClass($item, 'is-selected');
                         selectedItem = item;
                     }
@@ -34629,7 +34652,6 @@ define('__component__$tabs@husky',[],function() {
             this.sandbox.emit(INITIALIZED.call(this), selectedItem);
         }
     };
-
 });
 
 /**
@@ -35604,6 +35626,11 @@ define('__component__$toolbar@husky',[],function() {
                 if (!!item['class']) {
                     classArray.push(item['class']);
                 }
+
+                if (item.hidden) {
+                    classArray.push('hidden');
+                }
+
                 if (item.disabled) {
                     classArray.push('disabled');
                 }
@@ -39344,6 +39371,7 @@ define('__component__$column-navigation@husky',[], function() {
                     this.setElementSelected($item);
                     this.selected[number] = itemData;
                     lastSelected = itemData;
+                    this.options.selected = null;
                 }
             }.bind(this));
 
@@ -39363,7 +39391,7 @@ define('__component__$column-navigation@husky',[], function() {
          */
         renderItem: function(data) {
             var $item = this.sandbox.dom.createElement(this.sandbox.util.template(templates.item)({
-                    title: data[this.options.titleName],
+                    title: this.sandbox.util.escapeHtml(data[this.options.titleName]),
                     id: data[this.options.idName]
                 })),
                 disabled = (this.options.disableIds.indexOf(data[this.options.idName]) !== -1);
@@ -43357,6 +43385,10 @@ define('__component__$dropzone@husky',[], function () {
                         cancelIcon: this.options.cancelLoadingIcon
                     }),
                     previewsContainer: this.sandbox.dom.find('.' + constants.uploadedItemContainerClass, this.$dropzone)[0],
+                    accept: function(file, done) {
+                        console.log(file);
+                        done();
+                    },
                     init: function () {
                         // store dropzone context
                         that.dropzone = this;
@@ -44131,7 +44163,8 @@ define('__component__$data-navigation@husky',[
             translates: {
                 noData: 'No Data',
                 title: 'Data',
-                addButton: 'Add Data'
+                addButton: 'Add Data',
+                search: 'Search ...'
             }
         },
 
@@ -44331,7 +44364,8 @@ define('__component__$data-navigation@husky',[
                     options: {
                         el: this.sandbox.dom.find('.data-navigation-search', this.$el),
                         appearance: 'white',
-                        instanceName: 'data-navigation'
+                        instanceName: 'data-navigation',
+                        placeholderText: this.options.translates.search
                     }
                 }
             ]);
@@ -45196,14 +45230,27 @@ define('husky_extensions/collection',[],function() {
 /*
  * jQuery MiniColors: A tiny color picker built on jQuery
  *
- * Copyright: Cory LaViska for A Beautiful Site, LLC
+ * Copyright: Cory LaViska for A Beautiful Site, LLC: http://www.abeautifulsite.net/
  *
- * Contributions and bug reports: https://github.com/claviska/jquery-minicolors
+ * Contribute: https://github.com/claviska/jquery-minicolors
  *
  * @license: http://opensource.org/licenses/MIT
  *
  */
-if(jQuery) (function($) {
+(function (factory) {
+    /* jshint ignore:start */
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define('jquery-minicolors',['jquery'], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS
+        module.exports = factory(require('jquery'));
+    } else {
+        // Browser globals
+        factory(jQuery);
+    }
+    /* jshint ignore:end */
+}(function ($) {
 
     // Defaults
     $.minicolors = {
@@ -46040,9 +46087,7 @@ if(jQuery) (function($) {
             }, 1);
         });
 
-})(jQuery);
-define("jquery-minicolors", function(){});
-
+}));
 /**
  * This file is part of Husky frontend development framework.
  *

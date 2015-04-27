@@ -154,6 +154,14 @@
                 <source>sulu.media.version.active</source>
                 <target>aktiv</target>
             </trans-unit>
+            <trans-unit id="243d88cf2f64652633a5ca2169f22456" resname="media-selection.overlay.selected-images-label">
+                <source>media-selection.overlay.selected-images-label</source>
+                <target>Bilder ausgewählt</target>
+            </trans-unit>
+            <trans-unit id="243d88cf2f64652633a5ca2169f22407" resname="media-selection.list-toolbar.upload-info">
+                <source>media-selection.list-toolbar.upload-info</source>
+                <target>Klicken oder per Drag'n'Drop</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
