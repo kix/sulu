@@ -19,6 +19,7 @@ return Symfony\CS\Config\Config::create()
         '-concat_without_spaces',
         '-phpdoc_indent',
         '-phpdoc_params',
+        '-phpdoc_to_comment',
     ))
     ->finder(
         Symfony\CS\Finder\DefaultFinder::create()
