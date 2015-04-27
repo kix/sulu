@@ -37,13 +37,14 @@ define(function() {
         };
 
     return {
+
         header: function() {
             // init locale
             this.locale = this.sandbox.sulu.user.locale;
 
             return {
                 tabs: {
-                    url: '/admin/media/navigation/collection'
+                    url: '/admin/content-navigations?alias=media'
                 },
                 toolbar: {
                     template: [

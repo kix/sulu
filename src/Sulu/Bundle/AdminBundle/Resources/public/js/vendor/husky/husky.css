@@ -11218,7 +11218,7 @@ a.btn-black, a.btn-highlight {
 /* line 44, ../scss/modules/data-navigation.scss */
 .data-navigation-list-container {
   height: calc(100% - 50px);
-  overflow: scroll;
+  overflow: auto;
   position: relative;
 }
 

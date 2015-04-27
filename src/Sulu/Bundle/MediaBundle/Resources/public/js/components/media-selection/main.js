@@ -275,14 +275,11 @@ define(['sulumedia/collection/collections', 'sulumedia/model/collection'], funct
             // save the collection where new media should be uploaded
             this.sandbox.on('husky.select.' + this.options.instanceName + '.selected.item', changeUploadCollection.bind(this));
 
-            // add uploaded files
-            // this.sandbox.on('husky.dropzone.' + this.options.instanceName + '.files-added', addUploadedFile.bind(this));
-
-            this.sandbox.on('sulu.grid-group.' + this.options.instanceName + '.record-selected', function(id) {
+            this.sandbox.on('husky.datagrid.media-selection-ovelay.' + this.options.instanceName + '.item.select', function(id) {
                 this.sandbox.emit(RECORD_SELECTED.call(this), id);
             }.bind(this));
 
-            this.sandbox.on('sulu.grid-group.' + this.options.instanceName + '.record-deselected', function(id) {
+            this.sandbox.on('husky.datagrid.media-selection-ovelay.' + this.options.instanceName + '.item.deselect', function(id) {
                 this.sandbox.emit(RECORD_DESELECTED.call(this), id);
             }.bind(this));
 
@@ -592,7 +589,13 @@ define(['sulumedia/collection/collections', 'sulumedia/model/collection'], funct
                             url: '/admin/api/collections?sortBy=title',
                             nameKey: 'title',
                             instanceName: this.options.instanceName,
-                            globalEvents: false
+                            globalEvents: false,
+                            translates: {
+                                noData: '',
+                                title: this.sandbox.translate('navigation.media.collections'),
+                                addButton: '',
+                                search: this.sandbox.translate('navigation.media.collections.search')
+                            }
                         }
                     }
                 ]);
@@ -706,6 +709,7 @@ define(['sulumedia/collection/collections', 'sulumedia/model/collection'], funct
                         instanceName: 'media-selection-ovelay.' + this.options.instanceName,
                         preselected: this.getData().ids,
                         sortable: false,
+                        viewSpacingBottom: 180,
                         viewOptions: {
                             table: {
                                 fullWidth: false,
@@ -847,6 +851,7 @@ define(['sulumedia/collection/collections', 'sulumedia/model/collection'], funct
                     break;
                 }
             }
+            this.sandbox.emit(RECORD_DESELECTED.call(this), id);
 
             this.setData(data, false);
         }

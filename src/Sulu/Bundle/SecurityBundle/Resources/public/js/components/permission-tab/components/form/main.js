@@ -12,8 +12,8 @@ define(['config', 'sulusecurity/collections/roles'], function(Config, Roles) {
     'use strict';
 
     var permissionUrl = '/admin/api/permissions',
-        permissions = Config.get('sulusecurity.permissions'),
-        permissionTitles = Config.get('sulusecurity.permission_titles'),
+        permissions = Config.get('sulusecurity.permissions').slice(0, -1), // removes the security permission
+        permissionTitles = Config.get('sulusecurity.permission_titles').slice(0, -1),
         matrixContainerSelector = '#matrix-container',
         matrixSelector = '#matrix',
         permissionData = {
@@ -125,7 +125,17 @@ define(['config', 'sulusecurity/collections/roles'], function(Config, Roles) {
         },
 
         changePermission = function(data) {
-            permissionData.permissions[data.section][data.value] = data.activated;
+            if (typeof(data.value) === 'string') {
+                setPermission.call(this, data.section, data.value, data.activated);
+            } else {
+                this.sandbox.dom.each(data.value, function(index, value) {
+                    setPermission.call(this, data.section, value.value, data.activated);
+                });
+            }
+        },
+
+        setPermission = function(section, value, activated) {
+            permissionData.permissions[section][value] = activated;
         },
 
         save = function() {
