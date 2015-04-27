@@ -20,6 +20,7 @@ return Symfony\CS\Config\Config::create()
         '-phpdoc_indent',
         '-phpdoc_params',
         '-phpdoc_to_comment',
+        '-blankline_after_open_tag'
     ))
     ->finder(
         Symfony\CS\Finder\DefaultFinder::create()
