@@ -1,6 +1,7 @@
 <?php
+
 /*
- * This file is part of the Sulu CMS.
+ * This file is part of Sulu.
  *
  * (c) MASSIVE ART WebServices GmbH
  *
@@ -9,8 +10,6 @@
  */
 
 namespace Sulu\Bundle\MediaBundle\Media\FormatLoader;
-
-
 
 class XmlFormatLoaderTest extends \PHPUnit_Framework_TestCase
 {
