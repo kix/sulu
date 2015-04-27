@@ -10,13 +10,13 @@
 
 namespace Sulu\Bundle\MediaBundle\Search;
 
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Massive\Bundle\SearchBundle\Search\SearchEvents;
 use Massive\Bundle\SearchBundle\Search\Event\PreIndexEvent;
+use Massive\Bundle\SearchBundle\Search\SearchEvents;
+use Sulu\Bundle\MediaBundle\Content\MediaSelectionContainer;
 use Sulu\Bundle\MediaBundle\Media\Manager\MediaManagerInterface;
 use Sulu\Component\Webspace\Analyzer\RequestAnalyzerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
-use Sulu\Bundle\MediaBundle\Content\MediaSelectionContainer;
 
 /**
  * This subscriber populates the image URL field
@@ -35,7 +35,8 @@ class MediaSearchSubscriber implements EventSubscriberInterface
     protected $requestAnalyzer;
 
     /**
-     * The format of the image, which will be returned in the search
+     * The format of the image, which will be returned in the search.
+     *
      * @var string
      */
     protected $searchImageFormat;
@@ -56,7 +57,8 @@ class MediaSearchSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Returns the events this subscriber has subscribed
+     * Returns the events this subscriber has subscribed.
+     *
      * @return array
      */
     public static function getSubscribedEvents()
@@ -67,7 +69,8 @@ class MediaSearchSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Adds the image to the search document
+     * Adds the image to the search document.
+     *
      * @param PreIndexEvent $e
      */
     public function handlePreIndex(PreIndexEvent $e)
@@ -97,10 +100,11 @@ class MediaSearchSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Returns the url for the image
+     * Returns the url for the image.
+     *
      * @param $data
      * @param $locale
-     * @return null
+     *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
@@ -119,19 +123,19 @@ class MediaSearchSubscriber implements EventSubscriberInterface
             }
 
             $medias = $this->mediaManager->get($locale, array(
-                'ids' => $data['ids']
+                'ids' => $data['ids'],
             ));
         }
 
         // no media, no thumbnail URL
         if (!$medias) {
-            return null;
+            return;
         }
 
         $media = current($medias);
 
         if (!$media) {
-            return null;
+            return;
         }
 
         $formats = $media->getThumbnails();

@@ -16,13 +16,15 @@ use Sulu\Component\Webspace\Webspace;
 class InvalidPortalDefaultLocalizationException extends WebspaceException
 {
     /**
-     * The webspace in which the error occured
+     * The webspace in which the error occured.
+     *
      * @var Webspace
      */
     private $portal;
 
     /**
      * @param Webspace $portal
+     *
      * @internal param string $urlPattern
      */
     public function __construct(Webspace $webspace, Portal $portal)
@@ -35,7 +37,8 @@ class InvalidPortalDefaultLocalizationException extends WebspaceException
     }
 
     /**
-     * Returns the webspace in which the error occured
+     * Returns the webspace in which the error occured.
+     *
      * @return Webspace
      */
     public function getPortal()

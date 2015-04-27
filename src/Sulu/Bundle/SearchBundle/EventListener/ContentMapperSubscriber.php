@@ -11,15 +11,15 @@
 namespace Sulu\Bundle\SearchBundle\EventListener;
 
 use Massive\Bundle\SearchBundle\Search\SearchManagerInterface;
+use Sulu\Component\Content\ContentEvents;
+use Sulu\Component\Content\Event\ContentNodeDeleteEvent;
 use Sulu\Component\Content\Event\ContentNodeEvent;
 use Sulu\Component\Content\Structure;
 use Sulu\Component\PHPCR\SessionManager\SessionManagerInterface;
-use Sulu\Component\Content\ContentEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Sulu\Component\Content\Event\ContentNodeDeleteEvent;
 
 /**
- * Listen to sulu node save event and index the structure
+ * Listen to sulu node save event and index the structure.
  */
 class ContentMapperSubscriber implements EventSubscriberInterface
 {
@@ -61,7 +61,7 @@ class ContentMapperSubscriber implements EventSubscriberInterface
 
     /**
      * Deindex/index structure in search implementation depending
-     * on the publish state
+     * on the publish state.
      *
      * @param ContentNodeEvent $event
      */
@@ -71,6 +71,7 @@ class ContentMapperSubscriber implements EventSubscriberInterface
 
         if ($structure->getNodeState() === Structure::STATE_PUBLISHED) {
             $this->searchManager->index($structure);
+
             return;
         }
 
@@ -78,7 +79,7 @@ class ContentMapperSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Schedules a structure to be deindexed
+     * Schedules a structure to be deindexed.
      *
      * @param ContentNodeDeleteEvent
      */
@@ -89,7 +90,7 @@ class ContentMapperSubscriber implements EventSubscriberInterface
     }
 
     /**
-     * Deindex any structures which have been deleted
+     * Deindex any structures which have been deleted.
      *
      * @param ContentNodeDeleteEvent
      */

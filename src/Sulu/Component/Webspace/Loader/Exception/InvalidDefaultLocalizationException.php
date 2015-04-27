@@ -10,9 +10,6 @@
 
 namespace Sulu\Component\Webspace\Loader\Exception;
 
-use Sulu\Component\Webspace\Webspace;
-
 class InvalidDefaultLocalizationException extends WebspaceException
 {
-
 }

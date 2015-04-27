@@ -15,21 +15,24 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Defines the operations of the FormatManager
  * The FormatManager is a interface to manage Image Formats and Converts.
- * @package Sulu\Bundle\MediaBundle\Media\FormatManager
  */
 interface FormatManagerInterface
 {
     /**
-     * Return the image by a given url
+     * Return the image by a given url.
+     *
      * @param int $id
      * @param string $formatName
+     *
      * @return Response
      */
     public function returnImage($id, $formatName);
 
     /**
-     * Return media id and format
+     * Return media id and format.
+     *
      * @param string $url
+     *
      * @return array
      */
     public function getMediaProperties($url);
@@ -39,15 +42,18 @@ interface FormatManagerInterface
      * @param string $fileName
      * @param array $storageOptions
      * @param int $version
+     *
      * @return array
      */
     public function getFormats($id, $fileName, $storageOptions, $version);
 
     /**
-     * Delete the image by the given parameters
+     * Delete the image by the given parameters.
+     *
      * @param int $idMedia
      * @param string $fileName
      * @param array $options
+     *
      * @return bool
      */
     public function purge($idMedia, $fileName, $options);

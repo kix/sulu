@@ -29,7 +29,7 @@ class DefaultContext extends BaseContext implements SnippetAcceptingContext
         $this->execCommand('sulu:webspace:init', array('--no-interaction' => true));
     }
 
-    /** 
+    /**
      * @Given I click ":selector"
      * @When /^(?:|I )click on the element "([^"]*)"$/
      */
@@ -64,7 +64,6 @@ class DefaultContext extends BaseContext implements SnippetAcceptingContext
         while (true) {
             sleep(5);
         }
-
     }
 
     /**

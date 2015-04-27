@@ -12,7 +12,6 @@ namespace Sulu\Bundle\WebsiteBundle\Controller;
 
 use InvalidArgumentException;
 use Sulu\Component\Content\StructureInterface;
-use Sulu\Component\HttpCache\HttpCache;
 use Sulu\Component\Localization\Localization;
 use Sulu\Component\Webspace\Analyzer\RequestAnalyzerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -20,13 +19,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
- * Basic class to render Website from phpcr content
- * @package Sulu\Bundle\WebsiteBundle\Controller
+ * Basic class to render Website from phpcr content.
  */
 abstract class WebsiteController extends Controller
 {
     /**
-     * Returns a rendered structure
+     * Returns a rendered structure.
      */
     protected function renderStructure(
         StructureInterface $structure,
@@ -75,7 +73,7 @@ abstract class WebsiteController extends Controller
     }
 
     /**
-     * Generates attributes
+     * Generates attributes.
      */
     protected function getAttributes($attributes, StructureInterface $structure = null, $preview = false)
     {
@@ -127,7 +125,7 @@ abstract class WebsiteController extends Controller
     }
 
     /**
-     * Returns rendered part of template specified by block
+     * Returns rendered part of template specified by block.
      */
     protected function renderBlock($template, $block, $attributes = array())
     {

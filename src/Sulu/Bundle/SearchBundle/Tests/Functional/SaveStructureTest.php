@@ -11,15 +11,15 @@
 namespace Sulu\Bundle\SearchBundle\Tests\Functional;
 
 use Sulu\Bundle\SearchBundle\Tests\Fixtures\SecondStructureCache;
-use Sulu\Component\Content\StructureInterface;
+use Sulu\Component\Content\Mapper\ContentMapperRequest;
 use Sulu\Component\Content\PropertyTag;
 use Sulu\Component\Content\Structure;
-use Sulu\Component\Content\Mapper\ContentMapperRequest;
+use Sulu\Component\Content\StructureInterface;
 
 class SaveStructureTest extends BaseTestCase
 {
     /**
-     * Check that the automatic indexing works
+     * Check that the automatic indexing works.
      */
     public function testSaveStructure()
     {

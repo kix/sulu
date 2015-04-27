@@ -18,8 +18,7 @@ use Symfony\Component\HttpKernel\Exception\FlattenException;
 use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 
 /**
- * Custom exception controller
- * @package Sulu\Bundle\WebsiteBundle\Controller
+ * Custom exception controller.
  */
 class ExceptionController extends BaseExceptionController
 {
@@ -60,9 +59,9 @@ class ExceptionController extends BaseExceptionController
                                 'resourceLocator' => $this->requestAnalyzer->getResourceLocator(),
                                 'get' => $this->requestAnalyzer->getGetParameters(),
                                 'post' => $this->requestAnalyzer->getPostParameters(),
-                                'analyticsKey' => $this->requestAnalyzer->getAnalyticsKey()
+                                'analyticsKey' => $this->requestAnalyzer->getAnalyticsKey(),
                             ),
-                            'path' => $request->getPathInfo()
+                            'path' => $request->getPathInfo(),
                         )
                     ),
                     404
@@ -81,8 +80,8 @@ class ExceptionController extends BaseExceptionController
                             'currentContent' => $currentContent,
                             'request' => array(
                                 'webspaceKey' => $this->requestAnalyzer->getWebspace()->getKey(),
-                                'locale' => $this->requestAnalyzer->getCurrentLocalization()->getLocalization()
-                            )
+                                'locale' => $this->requestAnalyzer->getCurrentLocalization()->getLocalization(),
+                            ),
                         )
                     ),
                     $exception->getStatusCode()

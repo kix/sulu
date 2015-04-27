@@ -15,7 +15,6 @@ use Prophecy\Argument;
 use Sulu\Bundle\MediaBundle\Entity\File;
 use Sulu\Bundle\MediaBundle\Entity\FileVersion;
 use Sulu\Bundle\MediaBundle\Entity\Media;
-use Sulu\Bundle\MediaBundle\Media\FormatManager\FormatManager;
 
 class DefaultFormatManagerTest extends \PHPUnit_Framework_TestCase
 {
@@ -43,15 +42,15 @@ class DefaultFormatManagerTest extends \PHPUnit_Framework_TestCase
                         'action' => 'resize',
                         'parameters' => array(
                             'x' => 640,
-                            'y' => 480
-                        )
-                    )
+                            'y' => 480,
+                        ),
+                    ),
                 ),
                 'options' => array(
                     'jpeg_quality' => 70,
-                    'png_compression_level' => 6
-                )
-            )
+                    'png_compression_level' => 6,
+                ),
+            ),
         );
 
         $image = $this->prophesize('Imagine\Image\ImageInterface');

@@ -16,6 +16,7 @@ class InvalidWebspaceDefaultSegmentException extends WebspaceException
 {
     /**
      * @param Webspace $webspace
+     *
      * @internal param string $urlPattern
      */
     public function __construct(Webspace $webspace)

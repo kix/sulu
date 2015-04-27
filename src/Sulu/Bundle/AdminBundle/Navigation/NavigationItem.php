@@ -13,72 +13,82 @@ namespace Sulu\Bundle\AdminBundle\Navigation;
 /**
  * Represents an item in the navigation.
  * Contains the name and the coupled action for this specific NavigationItem.
- * @package Sulu\Bundle\AdminBundle\Navigation
  */
 class NavigationItem implements \Iterator
 {
     /**
-     * The id of the NavigationItem
+     * The id of the NavigationItem.
+     *
      * @var string
      */
     protected $id;
 
     /**
-     * The name being displayed in the navigation
+     * The name being displayed in the navigation.
+     *
      * @var string
      */
     protected $name;
 
     /**
-     * The icon of the navigationItem
+     * The icon of the navigationItem.
+     *
      * @var string
      */
     protected $icon;
 
     /**
-     * The action which should be executed when clicking on this NavigationItem
+     * The action which should be executed when clicking on this NavigationItem.
+     *
      * @var string
      */
     protected $action;
 
     /**
-     * Contains the children of this item, which are other NavigationItems
+     * Contains the children of this item, which are other NavigationItems.
+     *
      * @var array
      */
     protected $children = array();
 
     /**
-     * The title of the head area of the NavigationItem
+     * The title of the head area of the NavigationItem.
+     *
      * @var string
      */
     protected $headerTitle;
 
     /**
-     * The icon of the header are of the NavigationItem
+     * The icon of the header are of the NavigationItem.
+     *
      * @var string
      */
     protected $headerIcon;
 
     /**
-     * The current position of the iterator
-     * @var integer
+     * The current position of the iterator.
+     *
+     * @var int
      */
     protected $position;
 
     /**
-     * Defines if this menu item has settings
+     * Defines if this menu item has settings.
+     *
      * @var bool
      */
     protected $hasSettings;
 
     /**
-     * Describes how the navigation item should be shown in husky
+     * Describes how the navigation item should be shown in husky.
+     *
      * @var string
      */
     protected $displayOption;
 
     /**
-     * Defines if item is disabled
+     * Defines if item is disabled.
+     *
      * @var bool
      */
     protected $disabled;
@@ -98,7 +108,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Sets the id of the NavigationItem
+     * Sets the id of the NavigationItem.
+     *
      * @param string $id
      */
     public function setId($id)
@@ -107,7 +118,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Returns the id of the NavigationItem
+     * Returns the id of the NavigationItem.
+     *
      * @return string
      */
     public function getId()
@@ -116,7 +128,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Sets the name being displayed in the navigation
+     * Sets the name being displayed in the navigation.
+     *
      * @param string $name The name being displayed in the navigation
      */
     public function setName($name)
@@ -125,7 +138,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Returns the name being displayed in the navigation
+     * Returns the name being displayed in the navigation.
+     *
      * @return string
      */
     public function getName()
@@ -134,7 +148,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Set the icon of the NavigaitonItem
+     * Set the icon of the NavigaitonItem.
+     *
      * @param string $icon The icon of the NavigationItem
      */
     public function setIcon($icon)
@@ -143,7 +158,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Returns the action of the NavigationItem
+     * Returns the action of the NavigationItem.
+     *
      * @return string
      */
     public function getIcon()
@@ -152,7 +168,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Sets the action of the NavigationItem
+     * Sets the action of the NavigationItem.
+     *
      * @param String $action The action of the NavigationItem
      */
     public function setAction($action)
@@ -161,7 +178,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Returns the action of the NavigationItem
+     * Returns the action of the NavigationItem.
+     *
      * @return String
      */
     public function getAction()
@@ -170,7 +188,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Adds a child to the navigation item
+     * Adds a child to the navigation item.
+     *
      * @param NavigationItem $child
      */
     public function addChild(NavigationItem $child)
@@ -179,7 +198,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Returns all children from this navigation item
+     * Returns all children from this navigation item.
+     *
      * @return array
      */
     public function getChildren()
@@ -188,7 +208,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Sets the icon of the header
+     * Sets the icon of the header.
+     *
      * @param string $headerIcon
      */
     public function setHeaderIcon($headerIcon)
@@ -197,7 +218,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Returns the icon of the header
+     * Returns the icon of the header.
+     *
      * @return string
      */
     public function getHeaderIcon()
@@ -206,7 +228,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Sets the title of the header
+     * Sets the title of the header.
+     *
      * @param string $headerTitle The title of the header
      */
     public function setHeaderTitle($headerTitle)
@@ -215,7 +238,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Returns the title of the header
+     * Returns the title of the header.
+     *
      * @return string The title of the header
      */
     public function getHeaderTitle()
@@ -224,7 +248,6 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     *
      * @param int $position
      */
     public function setPosition($position)
@@ -241,7 +264,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Checks if the NavigationItem has some children
+     * Checks if the NavigationItem has some children.
+     *
      * @return bool True if the item has children, otherwise false
      */
     public function hasChildren()
@@ -250,7 +274,7 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * @param boolean $hasSettings
+     * @param bool $hasSettings
      */
     public function setHasSettings($hasSettings)
     {
@@ -258,7 +282,7 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getHasSettings()
     {
@@ -266,7 +290,7 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * @param boolean $disabled
+     * @param bool $disabled
      */
     public function setDisabled($disabled)
     {
@@ -274,7 +298,7 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getDisabled()
     {
@@ -282,7 +306,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Returns a copy of this navigation item without its children
+     * Returns a copy of this navigation item without its children.
+     *
      * @return NavigationItem
      */
     public function copyChildless()
@@ -300,17 +325,20 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Create a new instance of current navigation item class
+     * Create a new instance of current navigation item class.
+     *
      * @return NavigationItem
      */
     protected function copyWithName()
     {
-        return new NavigationItem($this->getName());
+        return new self($this->getName());
     }
 
     /**
-     * Compares this item with another one, but doesn't check the children
+     * Compares this item with another one, but doesn't check the children.
+     *
      * @param NavigationItem $other The other NavigationItem of the comparison
+     *
      * @return bool True if the NavigationItems are equal, otherwise false
      */
     public function equalsChildless(NavigationItem $other)
@@ -319,8 +347,10 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Searches for the equivalent of a specific NavigationItem
+     * Searches for the equivalent of a specific NavigationItem.
+     *
      * @param NavigationItem $navigationItem The NavigationItem to look for
+     *
      * @return NavigationItem The item if it is found, otherwise false
      */
     public function find($navigationItem)
@@ -338,12 +368,14 @@ class NavigationItem implements \Iterator
             }
         }
 
-        return null;
+        return;
     }
 
     /**
      * Searches for a specific NavigationItem in the children of this NavigationItem.
+     *
      * @param NavigationItem $navigationItem The navigationItem we look for
+     *
      * @return NavigationItem|null Null if the NavigationItem is not found, otherwise the found NavigationItem.
      */
     public function findChildren(NavigationItem $navigationItem)
@@ -355,13 +387,15 @@ class NavigationItem implements \Iterator
             }
         }
 
-        return null;
+        return;
     }
 
     /**
      * Merges this navigation item with the other parameter and returns a new NavigationItem.
      * Works only if there are no duplicate values on one level.
+     *
      * @param NavigationItem $other The navigation item this one should be merged with
+     *
      * @return NavigationItem
      */
     public function merge(NavigationItem $other = null)
@@ -389,8 +423,10 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Return the current element
+     * Return the current element.
+     *
      * @link http://php.net/manual/en/iterator.current.php
+     *
      * @return mixed Can return any type.
      */
     public function current()
@@ -399,9 +435,9 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Move forward to next element
+     * Move forward to next element.
+     *
      * @link http://php.net/manual/en/iterator.next.php
-     * @return void Any returned value is ignored.
      */
     public function next()
     {
@@ -409,8 +445,10 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Return the key of the current element
+     * Return the key of the current element.
+     *
      * @link http://php.net/manual/en/iterator.key.php
+     *
      * @return mixed scalar on success, or null on failure.
      */
     public function key()
@@ -419,9 +457,11 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Checks if current position is valid
+     * Checks if current position is valid.
+     *
      * @link http://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
+     *
+     * @return bool The return value will be casted to boolean and then evaluated.
      * Returns true on success or false on failure.
      */
     public function valid()
@@ -430,9 +470,9 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Rewind the Iterator to the first element
+     * Rewind the Iterator to the first element.
+     *
      * @link http://php.net/manual/en/iterator.rewind.php
-     * @return void Any returned value is ignored.
      */
     public function rewind()
     {
@@ -440,7 +480,8 @@ class NavigationItem implements \Iterator
     }
 
     /**
-     * Returns the content of the NavigationItem as array
+     * Returns the content of the NavigationItem as array.
+     *
      * @return array
      */
     public function toArray()
@@ -457,7 +498,7 @@ class NavigationItem implements \Iterator
         if ($this->getHeaderIcon() != null || $this->getHeaderTitle() != null) {
             $array['header'] = array(
                 'title' => $this->getHeaderTitle(),
-                'logo' => $this->getHeaderIcon()
+                'logo' => $this->getHeaderIcon(),
             );
         }
 

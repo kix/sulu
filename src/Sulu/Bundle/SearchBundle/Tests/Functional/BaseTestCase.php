@@ -10,12 +10,12 @@
 
 namespace Sulu\Bundle\SearchBundle\Tests\Functional;
 
+use Sulu\Bundle\SearchBundle\Tests\Fixtures\DefaultStructureCache;
+use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
 use Sulu\Component\Content\Mapper\ContentMapperInterface;
 use Sulu\Component\Content\Structure;
-use Symfony\Component\Filesystem\Filesystem;
-use Sulu\Bundle\SearchBundle\Tests\Fixtures\DefaultStructureCache;
 use Sulu\Component\Content\StructureInterface;
-use Sulu\Bundle\TestBundle\Testing\SuluTestCase;
+use Symfony\Component\Filesystem\Filesystem;
 
 class BaseTestCase extends SuluTestCase
 {
@@ -24,7 +24,7 @@ class BaseTestCase extends SuluTestCase
     public function setUp()
     {
         $this->initPhpcr();
-        $fs = new Filesystem;
+        $fs = new Filesystem();
         $fs->remove(__DIR__ . '/../app/data');
 
         $this->session = $this->getContainer()->get('doctrine_phpcr')->getConnection();
@@ -57,7 +57,7 @@ class BaseTestCase extends SuluTestCase
     {
         $data = array(
             'title' => $title,
-            'url' => $url
+            'url' => $url,
         );
 
         /** @var ContentMapperInterface $mapper */

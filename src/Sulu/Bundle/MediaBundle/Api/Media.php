@@ -10,7 +10,10 @@
 
 namespace Sulu\Bundle\MediaBundle\Api;
 
-use DateTime;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation\SerializedName;
+use JMS\Serializer\Annotation\VirtualProperty;
 use Sulu\Bundle\MediaBundle\Entity\File;
 use Sulu\Bundle\MediaBundle\Entity\FileVersion;
 use Sulu\Bundle\MediaBundle\Entity\FileVersionContentLanguage;
@@ -21,16 +24,13 @@ use Sulu\Bundle\MediaBundle\Entity\MediaType;
 use Sulu\Bundle\MediaBundle\Media\Exception\FileNotFoundException;
 use Sulu\Bundle\MediaBundle\Media\Exception\FileVersionNotFoundException;
 use Sulu\Bundle\TagBundle\Entity\Tag;
-use JMS\Serializer\Annotation\VirtualProperty;
-use JMS\Serializer\Annotation\SerializedName;
-use JMS\Serializer\Annotation\ExclusionPolicy;
 use Sulu\Component\Rest\ApiWrapper;
 use Sulu\Component\Security\Authentication\UserInterface;
-use JMS\Serializer\Annotation\Groups;
 
 /**
  * Class Media
  * The Media RestObject is the api entity for the MediaController.
+ *
  * @ExclusionPolicy("all")
  */
 class Media extends ApiWrapper
@@ -85,6 +85,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("id")
+     *
      * @return int
      * @Groups({"partialMedia"})
      */
@@ -96,6 +97,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("locale")
+     *
      * @return string
      */
     public function getLocale()
@@ -105,6 +107,7 @@ class Media extends ApiWrapper
 
     /**
      * @param Collection $collection
+     *
      * @return $this
      */
     public function setCollection($collection)
@@ -117,6 +120,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("collection")
+     *
      * @return int
      */
     public function getCollection()
@@ -126,11 +130,12 @@ class Media extends ApiWrapper
             return $collection->getId();
         }
 
-        return null;
+        return;
     }
 
     /**
      * @param int $size
+     *
      * @return $this
      */
     public function setSize($size)
@@ -143,6 +148,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("size")
+     *
      * @return int
      */
     public function getSize()
@@ -152,6 +158,7 @@ class Media extends ApiWrapper
 
     /**
      * @param string $mimeType
+     *
      * @return $this
      */
     public function setMimeType($mimeType)
@@ -164,6 +171,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("mimeType")
+     *
      * @return string
      */
     public function getMimeType()
@@ -173,6 +181,7 @@ class Media extends ApiWrapper
 
     /**
      * @param string $title
+     *
      * @return $this
      */
     public function setTitle($title)
@@ -185,6 +194,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("title")
+     *
      * @return string
      */
     public function getTitle()
@@ -203,6 +213,7 @@ class Media extends ApiWrapper
 
     /**
      * @param string $description
+     *
      * @return $this
      */
     public function setDescription($description)
@@ -215,6 +226,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("description")
+     *
      * @return string
      */
     public function getDescription()
@@ -233,6 +245,7 @@ class Media extends ApiWrapper
 
     /**
      * @param int $version
+     *
      * @return $this
      */
     public function setVersion($version)
@@ -245,6 +258,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("version")
+     *
      * @return int
      */
     public function getVersion()
@@ -262,17 +276,20 @@ class Media extends ApiWrapper
 
     /**
      * @param array $additionalVersionData
+     *
      * @return $this
      */
     public function setAdditionalVersionData($additionalVersionData)
     {
         $this->additionalVersionData = $additionalVersionData;
+
         return $this;
     }
 
     /**
      * @VirtualProperty
      * @SerializedName("versions")
+     *
      * @return array
      */
     public function getVersions()
@@ -296,6 +313,7 @@ class Media extends ApiWrapper
 
     /**
      * @param int $name
+     *
      * @return $this
      */
     public function setName($name)
@@ -308,6 +326,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("name")
+     *
      * @return int
      */
     public function getName()
@@ -318,6 +337,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("type")
+     *
      * @return MediaType
      */
     public function getType()
@@ -327,6 +347,7 @@ class Media extends ApiWrapper
 
     /**
      * @param MediaType $type
+     *
      * @return $this
      */
     public function setType($type)
@@ -339,6 +360,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("storageOptions")
+     *
      * @return string
      */
     public function getStorageOptions()
@@ -348,6 +370,7 @@ class Media extends ApiWrapper
 
     /**
      * @param string $storageOptions
+     *
      * @return $this
      */
     public function setStorageOptions($storageOptions)
@@ -359,6 +382,7 @@ class Media extends ApiWrapper
 
     /**
      * @param array $publishLanguages
+     *
      * @return $this
      */
     public function setPublishLanguages($publishLanguages)
@@ -380,6 +404,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("publishLanguages")
+     *
      * @return array
      */
     public function getPublishLanguages()
@@ -395,6 +420,7 @@ class Media extends ApiWrapper
 
     /**
      * @param array $contentLanguages
+     *
      * @return $this
      */
     public function setContentLanguages($contentLanguages)
@@ -416,6 +442,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("contentLanguages")
+     *
      * @return array
      */
     public function getContentLanguages()
@@ -442,6 +469,7 @@ class Media extends ApiWrapper
 
     /**
      * @param Tag $tagEntity
+     *
      * @return $this
      */
     public function addTag(Tag $tagEntity)
@@ -457,6 +485,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("tags")
+     *
      * @return array
      */
     public function getTags()
@@ -472,6 +501,7 @@ class Media extends ApiWrapper
 
     /**
      * @SerializedName("thumbnails")
+     *
      * @return array
      */
     public function getFormats()
@@ -482,6 +512,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("thumbnails")
+     *
      * @return array
      */
     public function getThumbnails() // FIXME change to getPreviews when SerializedName working
@@ -500,6 +531,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("url")
+     *
      * @return string
      */
     public function getUrl()
@@ -518,6 +550,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("changed")
+     *
      * @return string
      */
     public function getChanged()
@@ -527,6 +560,7 @@ class Media extends ApiWrapper
 
     /**
      * @param UserInterface $changer
+     *
      * @return $this
      */
     public function setChanger($changer)
@@ -539,6 +573,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("changer")
+     *
      * @return string
      */
     public function getChanger()
@@ -548,12 +583,13 @@ class Media extends ApiWrapper
             return $user->getFullName();
         }
 
-        return null;
+        return;
     }
 
     /**
      * @VirtualProperty
      * @SerializedName("created")
+     *
      * @return mixed
      */
     public function getCreated()
@@ -563,6 +599,7 @@ class Media extends ApiWrapper
 
     /**
      * @param UserInterface $creator
+     *
      * @return $this
      */
     public function setCreator($creator)
@@ -575,6 +612,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("creator")
+     *
      * @return string
      */
     public function getCreator()
@@ -584,11 +622,12 @@ class Media extends ApiWrapper
             return $user->getFullName();
         }
 
-        return null;
+        return;
     }
 
     /**
      * @param array $properties
+     *
      * @return $this
      */
     public function setProperties($properties)
@@ -601,6 +640,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("properties")
+     *
      * @return array
      */
     public function getProperties()
@@ -611,6 +651,7 @@ class Media extends ApiWrapper
     /**
      * @VirtualProperty
      * @SerializedName("downloadCounter")
+     *
      * @return string
      */
     public function getDownloadCounter()
@@ -627,7 +668,8 @@ class Media extends ApiWrapper
     }
 
     /**
-     * Returns array representation of media
+     * Returns array representation of media.
+     *
      * @return array
      */
     public function toArray()
@@ -651,12 +693,13 @@ class Media extends ApiWrapper
             'changer' => $this->getChanger(),
             'created' => $this->getCreated(),
             'creator' => $this->getCreator(),
-            'downloadCounter' => $this->getDownloadCounter()
+            'downloadCounter' => $this->getDownloadCounter(),
         );
     }
 
     /**
      * @return FileVersion
+     *
      * @throws \Sulu\Bundle\MediaBundle\Media\Exception\FileVersionNotFoundException
      */
     public function getFileVersion()
@@ -687,6 +730,7 @@ class Media extends ApiWrapper
 
     /**
      * @return File
+     *
      * @throws \Sulu\Bundle\MediaBundle\Media\Exception\FileNotFoundException
      */
     public function getFile()
@@ -699,6 +743,7 @@ class Media extends ApiWrapper
         foreach ($this->entity->getFiles() as $file) {
             // currently only one file per media exists
             $this->file = $file;
+
             return $this->file;
         }
 
@@ -707,6 +752,7 @@ class Media extends ApiWrapper
 
     /**
      * @param bool $create
+     *
      * @return FileVersionMeta
      */
     private function getMeta($create = false)

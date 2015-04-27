@@ -10,20 +10,18 @@
 
 namespace Sulu\Bundle\MediaBundle\Behat;
 
+use Behat\Behat\Context\SnippetAcceptingContext;
+use Sulu\Bundle\MediaBundle\Entity\Collection;
+use Sulu\Bundle\MediaBundle\Entity\CollectionMeta;
+use Sulu\Bundle\MediaBundle\Entity\CollectionType;
+use Sulu\Bundle\MediaBundle\Entity\Media;
+use Sulu\Bundle\MediaBundle\Entity\MediaType;
 use Sulu\Bundle\MediaBundle\Media\Manager\MediaManagerInterface;
 use Sulu\Bundle\TestBundle\Behat\BaseContext;
-use Behat\Behat\Context\SnippetAcceptingContext;
-use Sulu\Bundle\MediaBundle\Entity\Media;
-use Sulu\Bundle\MediaBundle\Entity\Email;
-use Sulu\Bundle\MediaBundle\Entity\EmailType;
-use Sulu\Bundle\MediaBundle\Entity\Collection;
-use Sulu\Bundle\MediaBundle\Entity\CollectionType;
-use Sulu\Bundle\MediaBundle\Entity\CollectionMeta;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Sulu\Bundle\MediaBundle\Entity\MediaType;
 
 /**
- * Behat context class for the MediaBundle
+ * Behat context class for the MediaBundle.
  */
 class MediaContext extends BaseContext implements SnippetAcceptingContext
 {
@@ -152,7 +150,7 @@ class MediaContext extends BaseContext implements SnippetAcceptingContext
 
     /**
      * Return the last media collection that was created
-     * in this context
+     * in this context.
      *
      * @return Collection
      */
@@ -168,7 +166,7 @@ class MediaContext extends BaseContext implements SnippetAcceptingContext
     }
 
     /**
-     * Return the media manager
+     * Return the media manager.
      *
      * @return MediaManagerInterface
      */
@@ -178,9 +176,10 @@ class MediaContext extends BaseContext implements SnippetAcceptingContext
     }
 
     /**
-     * Get or create a collection type
+     * Get or create a collection type.
      *
      * @param string $name Name of collection type to get or create
+     *
      * @return CollectionType
      */
     private function getOrCreateCollectionType($name)
@@ -198,9 +197,10 @@ class MediaContext extends BaseContext implements SnippetAcceptingContext
     }
 
     /**
-     * Get or create a media type
+     * Get or create a media type.
      *
      * @param string $name Name of media type to created or retrieved
+     *
      * @return MediaType
      */
     private function getOrCreateMediaType($name)
@@ -218,9 +218,10 @@ class MediaContext extends BaseContext implements SnippetAcceptingContext
     }
 
     /**
-     * Get or create a media collection
+     * Get or create a media collection.
      *
      * @param string $name Name of collection to get or create
+     *
      * @return Collection
      */
     private function getOrCreateMediaCollection($name)

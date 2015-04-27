@@ -11,20 +11,19 @@
 namespace Sulu\Bundle\SearchBundle\Search\Metadata;
 
 use Massive\Bundle\SearchBundle\Search\Factory;
+use Massive\Bundle\SearchBundle\Search\Metadata\ComplexMetadata;
 use Massive\Bundle\SearchBundle\Search\Metadata\IndexMetadataInterface;
+use Metadata\ClassMetadata;
 use Metadata\Driver\DriverInterface;
-use Sulu\Component\Content\StructureInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Sulu\Bundle\SearchBundle\Search\SuluSearchEvents;
 use Sulu\Bundle\SearchBundle\Search\Event\StructureMetadataLoadEvent;
+use Sulu\Bundle\SearchBundle\Search\SuluSearchEvents;
 use Sulu\Component\Content\Block\BlockProperty;
 use Sulu\Component\Content\PropertyInterface;
-use Metadata\ClassMetadata;
-use Massive\Bundle\SearchBundle\Search\Metadata\ComplexMetadata;
+use Sulu\Component\Content\StructureInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
- * Provides a Metadata Driver for massive search-bundle
- * @package Sulu\Bundle\SearchBundle\Metadata
+ * Provides a Metadata Driver for massive search-bundle.
  */
 class StructureDriver implements DriverInterface
 {
@@ -45,19 +44,22 @@ class StructureDriver implements DriverInterface
     }
 
     /**
-     * loads metadata for a given class if its derived from StructureInterface
+     * loads metadata for a given class if its derived from StructureInterface.
+     *
      * @param \ReflectionClass $class
+     *
      * @throws \InvalidArgumentException
+     *
      * @return IndexMetadataInterface|null
      */
     public function loadMetadataForClass(\ReflectionClass $class)
     {
         if (!$class->implementsInterface('Sulu\Component\Content\StructureInterface')) {
-            return null;
+            return;
         }
 
         if ($class->isAbstract()) {
-            return null;
+            return;
         }
 
         /** @var StructureInterface $structure */
@@ -72,7 +74,6 @@ class StructureDriver implements DriverInterface
         $allProperties = array();
 
         foreach ($structure->getProperties(true) as $property) {
-
             if ($property instanceof BlockProperty) {
                 $propertyMapping = new ComplexMetadata();
                 foreach ($property->getTypes() as $type) {

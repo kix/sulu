@@ -11,14 +11,15 @@
 namespace Sulu\Component\Util;
 
 /**
- * Utility functions of UUID
- * @package Sulu\Component\Util
+ * Utility functions of UUID.
  */
 class UuidUtils
 {
     /**
-     * checks if given string is a valid UUID
+     * checks if given string is a valid UUID.
+     *
      * @param $id
+     *
      * @return bool
      */
     public static function isUUID($id)

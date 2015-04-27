@@ -10,10 +10,6 @@
 
 namespace Sulu\Bundle\SearchBundle\Tests\Functional;
 
-use Sulu\Component\HttpKernel\SuluKernel;
-use Symfony\Component\Filesystem\Filesystem;
-use Sulu\Bundle\TestBundle\Testing\SuluWebsiteTestCase;
-
 class WebsiteIntegrationTest extends BaseTestCase
 {
     protected $client;

@@ -94,7 +94,7 @@ class PreviewMessageHandler implements MessageHandlerInterface
                         'command' => 'fail',
                         'code' => $e->getCode(),
                         'msg' => $e->getMessage(),
-                        'parentMsg' => $message
+                        'parentMsg' => $message,
                     )
                 )
             );
@@ -102,11 +102,14 @@ class PreviewMessageHandler implements MessageHandlerInterface
     }
 
     /**
-     * Executes command
+     * Executes command.
+     *
      * @param ConnectionInterface $conn
      * @param MessageHandlerContext $context
      * @param array $msg
+     *
      * @return mixed|null
+     *
      * @throws PreviewNotStartedException
      * @throws MissingParameterException
      */
@@ -137,7 +140,7 @@ class PreviewMessageHandler implements MessageHandlerInterface
     }
 
     /**
-     * Reconnect to mysql
+     * Reconnect to mysql.
      */
     private function reconnect()
     {
@@ -156,11 +159,14 @@ class PreviewMessageHandler implements MessageHandlerInterface
     }
 
     /**
-     * Start preview session
+     * Start preview session.
+     *
      * @param ConnectionInterface $conn
      * @param MessageHandlerContext $context
      * @param array $msg
+     *
      * @return array
+     *
      * @throws MissingParameterException
      */
     private function start(ConnectionInterface $conn, MessageHandlerContext $context, $msg)
@@ -208,15 +214,18 @@ class PreviewMessageHandler implements MessageHandlerInterface
         return array(
             'command' => 'start',
             'content' => $contentUuid,
-            'msg' => 'OK'
+            'msg' => 'OK',
         );
     }
 
     /**
-     * Stop preview session
+     * Stop preview session.
+     *
      * @param ConnectionInterface $from
      * @param MessageHandlerContext $context
+     *
      * @return array
+     *
      * @throws PreviewNotStartedException
      */
     private function stop(ConnectionInterface $from, MessageHandlerContext $context)
@@ -242,16 +251,19 @@ class PreviewMessageHandler implements MessageHandlerInterface
         return array(
             'command' => 'start',
             'content' => $contentUuid,
-            'msg' => 'OK'
+            'msg' => 'OK',
         );
     }
 
     /**
-     * Updates properties of current session content
+     * Updates properties of current session content.
+     *
      * @param ConnectionInterface $from
      * @param MessageHandlerContext $context
      * @param array $msg
+     *
      * @return array
+     *
      * @throws PreviewNotStartedException
      * @throws MissingParameterException
      */
@@ -304,7 +316,7 @@ class PreviewMessageHandler implements MessageHandlerInterface
                 $contentUuid,
                 $webspaceKey,
                 $locale
-            )
+            ),
         );
     }
 }
