@@ -34335,12 +34335,12 @@ define('__component__$search@husky',[], function() {
  *      - data: if no url is provided
  *      - selected: the item that's selected on initialize
  *      - instanceName - enables custom events (in case of multiple tabs on one page)
- *      - preselect - either true (for url) or position / title  (see preselector for more information)
+ *      - preselect - either true (for url) or position / name  (see preselector for more information)
  *      - skin - string of class to add to the components element (e.g. 'overlay')
  *      - preselector:
  *          - url: defines if actions are going to be checked against current URL and preselected (current URL mus be provided by data.url) - preselector itself is not going to be taken into account in this case
  *          - position: compares items position against whats defined in options.preselect
- *          - title: compares items title against whats defined in options.preselect
+ *          - name: compares items name against whats defined in options.preselect
  *      - forceReload - defines if tabs are forcing page to reload
  *      - forceSelect - forces tabs to select first item, if no selected item has been found
  *      - preSelectEvent.enabled - when enabled triggers the item pre select event
@@ -34586,10 +34586,7 @@ define('__component__$tabs@husky',[],function() {
         },
 
         generateIds: function(data) {
-            if (!data.id) {
-                data.id = this.getRandId();
-            }
-            this.sandbox.util.foreach(data.items, function(item) {
+            this.sandbox.util.foreach(data, function(item) {
                 if (!item.id) {
                     item.id = this.getRandId();
                 }
@@ -34618,10 +34615,10 @@ define('__component__$tabs@husky',[],function() {
             this.items = [];
             this.domItems = {};
 
-            this.sandbox.util.foreach(data.items, function(item, index) {
+            this.sandbox.util.foreach(data, function(item, index) {
                 this.items[item.id] = item;
                 $item = this.sandbox.dom.createElement(
-                    '<li data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.title) + '</a></li>'
+                    '<li data-id="' + item.id + '"><a href="#">' + this.sandbox.translate(item.name) + '</a></li>'
                 );
                 this.sandbox.dom.append($list, $item);
 
@@ -34636,7 +34633,7 @@ define('__component__$tabs@husky',[],function() {
                 if (!!this.options.preselect) {
                     if ((this.options.preselector === 'url' && !!data.url && data.url === item.action) ||
                         (this.options.preselector === 'position' && (index + 1).toString() === this.options.preselect.toString()) ||
-                        (this.options.preselector === 'title' && item.title === this.options.preselect)) {
+                        (this.options.preselector === 'name' && item.name === this.options.preselect)) {
                         this.sandbox.dom.addClass($item, 'is-selected');
                         selectedItem = item;
                     }
@@ -34655,7 +34652,6 @@ define('__component__$tabs@husky',[],function() {
             this.sandbox.emit(INITIALIZED.call(this), selectedItem);
         }
     };
-
 });
 
 /**
@@ -40351,13 +40347,10 @@ define('__component__$ckeditor@husky',[], function() {
             initializedCallback: null,
             instanceName: null,
             tableEnabled: true,
-            linksEnabled: true,
-            scriptEnabled: true,
-            iframeEnabled: true,
+            linkEnabled: true,
             pasteFromWord: true,
-            height: null,
-            maxHeight: null,
-            enterMode: null
+            height: 200,
+            extraAllowedContent: 'img(*)[*]; span(*)[*]; div(*)[*]; iframe(*)[*]; script(*)[*]'
         },
 
         /**
@@ -40418,7 +40411,7 @@ define('__component__$ckeditor@husky',[], function() {
             }
 
             // activate embed links
-            if (this.options.linksEnabled === true) {
+            if (this.options.linkEnabled === true) {
                 config.toolbar.push({ name: 'links', items: [ 'Link', 'Unlink' ] });
                 config.linkShowTargetTab = false;
             }
@@ -40439,7 +40432,7 @@ define('__component__$ckeditor@husky',[], function() {
                 config.autoGrow_maxHeight = this.options.maxHeight;
                 // if height bigger maxHeight height = maxHeight
                 if (config.height > config.autoGrow_maxHeight) {
-                    config.autoGrow_maxHeight = config.height;
+                    config.height = config.autoGrow_maxHeight;
                 }
             }
 
@@ -40448,18 +40441,9 @@ define('__component__$ckeditor@husky',[], function() {
                 config.enterMode = CKEDITOR['ENTER_' + this.options.enterMode.toUpperCase()];
             }
 
-
-            // extra allowed
-            var extraAllowedContent = '';
-
-            // extra allowed content iframe
-            if (this.options.iframeEnabled === true) {
-                extraAllowedContent += ' iframe(*)[src,border,frameborder,width,height,style,allowfullscreen,name,marginheight,marginwidth,seamless,srcdoc];';
-            }
-
-            // extra allowed content iframe
-            if (this.options.scriptEnabled === true) {
-                extraAllowedContent += ' script(*)[src,type,defer,async,charset];';
+            // Styles
+            if (!!config.stylesSet && config.stylesSet.length > 0) {
+                config.toolbar.push({ name: 'styles', items: [ 'Styles' ] });
             }
 
             config.toolbar.push({ name: 'code', items: [ 'Source' ] });
@@ -40473,14 +40457,9 @@ define('__component__$ckeditor@husky',[], function() {
             delete config._ref;
             delete config.require;
             delete config.element;
-            delete config.linksEnabled;
+            delete config.linkEnabled;
             delete config.tableEnabled;
-            delete config.scriptEnabled;
-            delete config.iframeEnabled;
             delete config.maxHeight;
-
-            // allow img tags to have any class (*) and any attribute [*]
-            config.extraAllowedContent = 'img(*)[src,width,height,title,alt]; a(*)[href,target,type,rel,name,title];' + extraAllowedContent;
 
             return config;
         };
@@ -45102,9 +45081,8 @@ define('__component__$data-navigation@husky',[
                     // callback when editor is ready
                     init: function(selector, callback, config) {
 
-                        var configuration = app.sandbox.util.extend(true, {}, config, getConfig.call()),
+                        var configuration = app.sandbox.util.extend(true, {}, getConfig.call(), config),
                             $editor;
-
                         if (!!callback && typeof callback === 'function') {
                             $editor = $(selector).ckeditor(callback, configuration);
                         } else {

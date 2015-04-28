@@ -1,5 +1,18 @@
 # Upgrade
 
+## dev-develop
+
+### Texteditor Content Type params changed
+
+| Before                                        | Now                                             |
+|-----------------------------------------------|-------------------------------------------------|
+| `<param name="tables" value="true" />`        | `<param name="table" value="true" />`           |
+| `<param name="links" value="true" />`         | `<param name="link" value="true" />`            |
+| `<param name="pasteFromWord" value="true" />` | `<param name="paste_from_word" value="true" />` |
+| `<param name="maxHeight" value="500" />`      | `<param name="max_height" value="500" />`       |
+| `<param name="iframes" value="true" />`       | allowed as default                              |
+| `<param name="scripts" value="true" />`       | allowed as default                              |
+
 ## 0.17.0
 
 ### Media
